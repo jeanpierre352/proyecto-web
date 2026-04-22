@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MODA PERÚ - Carrito de Compras</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇵🇪</text></svg>">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="styles.css">
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    fontFamily: {
+                        "label-caps": ["Calibri", "sans-serif"],
+                        "headline-md": ["Calibri", "sans-serif"],
+                        "body-lg": ["Calibri", "sans-serif"],
+                        "headline-lg": ["Calibri", "sans-serif"],
+                        "body-md": ["Calibri", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="font-body-md text-gray-900 dark:text-gray-100 bg-white dark:bg-black transition-colors duration-300">
+    <header class="bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800 fixed top-0 z-50 w-full">
+        <nav class="flex justify-between items-center h-20 px-8 max-w-7xl mx-auto w-full">
+            <div class="flex items-center gap-12">
+                <a href="home.html" class="text-2xl font-bold tracking-tighter text-black dark:text-white">MODA PERÚ</a>
+                <div class="hidden md:flex gap-8 items-center">
+                    <a class="nav-link text-gray-600 dark:text-gray-400" href="home.html">Colección</a>
+                    <a class="nav-link text-gray-600 dark:text-gray-400" href="novedades.html">Novedades</a>
+                    <a class="nav-link text-gray-600 dark:text-gray-400" href="product.html">Hombre</a>
+                    <a class="nav-link text-gray-600 dark:text-gray-400" href="mujer.html">Mujer</a>
+                </div>
+            </div>
+            <div class="flex items-center gap-6">
+                <button class="icon-btn dark:text-white">
+                    <span class="material-symbols-outlined">search</span>
+                </button>
+                <button class="icon-btn dark:text-white" onclick="window.location.href='index.html'">
+                    <span class="material-symbols-outlined">person</span>
+                </button>
+                <button class="icon-btn relative dark:text-white" onclick="window.location.href='cart.html'">
+                    <span class="material-symbols-outlined">shopping_bag</span>
+                    <span id="cartBadge" class="absolute -top-1 -right-1 bg-black dark:bg-white text-white dark:text-black text-[10px] w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
+                </button>
+                <button class="icon-btn dark:text-white" onclick="toggleDarkMode()">
+                    <span id="themeIcon" class="material-symbols-outlined">dark_mode</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="pt-28 pb-20 max-w-7xl mx-auto px-8">
+        <h1 class="headline-lg text-black dark:text-white mb-8">Mi Carrito</h1>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-12">
+            <div class="lg:col-span-2" id="cartItems">
+                <div class="flex gap-6 py-6 border-b border-gray-200 dark:border-gray-700">
+                    <div class="w-24 h-32 bg-gray-100 dark:bg-gray-900 overflow-hidden">
+                        <img alt="Abrigo" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1debAKjt8bY8QJSHbssGk9uZaU-dWVMOiJ_WiTBndJDmkV-SukSCkhfSfBkxkdxaRYtEbbv01pNO28G4KKTe8dvtYm7dgyzS_hYap3duxTHHjGrf5i6G-fg0mw6P6RQjdVqO-rleLZWlv9KzCWMpYkJjWEqHSVXOmwQXbafVLFuXheCfdbtxFabySM-5E3rLvCyTkNEEyknxFAFQODRxkN6pVaxADAGlaAGsV0-MH9AudF9XJTu8GPSGhV8Sa0NduoXxXSA4p5w"/>
+                    </div>
+                    <div class="flex-1">
+                        <h4 class="product-name">Abrigo de Alpaca</h4>
+                        <p class="text-gray-500 dark:text-gray-400 text-sm">Talla: M</p>
+                        <p class="product-price mt-2">S/ 1,450</p>
+                    </div>
+                    <div class="flex flex-col items-end gap-2">
+                        <button class="text-gray-400 hover:text-red-500">
+                            <span class="material-symbols-outlined">delete</span>
+                        </button>
+                        <div class="flex items-center gap-2">
+                            <button class="w-8 h-8 border border-gray-300 dark:border-gray-600 flex items-center justify-center">-</button>
+                            <span>1</span>
+                            <button class="w-8 h-8 border border-gray-300 dark:border-gray-600 flex items-center justify-center">+</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-gray-50 dark:bg-gray-900 p-6 h-fit">
+                <h3 class="headline-md text-black dark:text-white mb-6">Resumen</h3>
+                <div class="space-y-4 border-b border-gray-200 dark:border-gray-700 pb-4">
+                    <div class="flex justify-between">
+                        <span class="text-gray-600 dark:text-gray-400">Subtotal</span>
+                        <span class="text-black dark:text-white">S/ 1,450</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600 dark:text-gray-400">Envío</span>
+                        <span class="text-black dark:text-white">S/ 15</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600 dark:text-gray-400">IGV (18%)</span>
+                        <span class="text-black dark:text-white">S/ 264</span>
+                    </div>
+                </div>
+                <div class="flex justify-between py-4">
+                    <span class="font-bold text-black dark:text-white">Total</span>
+                    <span class="font-bold text-black dark:text-white">S/ 1,729</span>
+                </div>
+                <button class="btn-primary mt-4">Proceder al Pago</button>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-white dark:bg-black border-t border-gray-200 dark:border-gray-800 w-full mt-20">
+        <div class="flex flex-col md:flex-row justify-between items-center py-12 px-8 max-w-7xl mx-auto gap-6">
+            <div class="text-lg font-black text-black dark:text-white uppercase">MODA PERÚ</div>
+            <div class="flex flex-wrap justify-center gap-6">
+                <a class="footer-link cursor-pointer">Sostenibilidad</a>
+                <a class="footer-link cursor-pointer">Términos</a>
+                <a class="footer-link cursor-pointer">Envíos</a>
+                <a class="footer-link cursor-pointer">Devoluciones</a>
+            </div>
+            <div class="text-[10px] tracking-widest uppercase text-gray-500">© 2024 MODA PERÚ. LIMA, PERÚ.</div>
+        </div>
+    </footer>
+
+    <script>
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            const icon = document.getElementById('themeIcon');
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                icon.textContent = 'dark_mode';
+                localStorage.setItem('modaPeruTheme', 'light');
+            } else {
+                html.classList.add('dark');
+                icon.textContent = 'light_mode';
+                localStorage.setItem('modaPeruTheme', 'dark');
+            }
+        }
+
+        function loadTheme() {
+            const theme = localStorage.getItem('modaPeruTheme') || 'light';
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+                const icon = document.getElementById('themeIcon');
+                if (icon) icon.textContent = 'light_mode';
+            }
+        }
+
+        window.onload = function() {
+            loadTheme();
+        };
+    </script>
+</body>
+</html>

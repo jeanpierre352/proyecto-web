@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MODA PERÚ - Tienda Online</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇵🇪</text></svg>">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <style>
+        body {
+            font-family: 'Manrope', sans-serif;
+            background-color: #ffffff;
+            color: #000000;
+        }
+        .form-input {
+            width: 100%;
+            border: none;
+            border-bottom: 1px solid #e5e7eb;
+            background: transparent;
+            padding: 12px 0;
+            font-size: 16px;
+        }
+        .form-input:focus {
+            outline: none;
+            border-bottom-color: #000000;
+        }
+        .btn-primary {
+            background-color: #000000;
+            color: #ffffff;
+            padding: 20px;
+            width: 100%;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-secondary {
+            background-color: transparent;
+            color: #000000;
+            padding: 20px;
+            width: 100%;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border: 1px solid #000000;
+            cursor: pointer;
+        }
+        .nav-link {
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #6b7280;
+            text-decoration: none;
+        }
+        .nav-link:hover {
+            color: #000000;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: { extend: { fontFamily: { "body-md": ["Manrope"] } } }
+        }
+    </script>
+</head>
+<body class="font-body-md text-gray-900 bg-white">
+    <header class="bg-white border-b border-gray-200 fixed top-0 z-50 w-full">
+        <nav class="flex justify-between items-center h-20 px-8 max-w-7xl mx-auto w-full">
+            <a href="index.html" class="text-2xl font-bold tracking-tighter text-black">MODA PERÚ</a>
+            <nav class="hidden md:flex gap-8 items-center">
+                <a class="nav-link" href="#">Colección</a>
+                <a class="nav-link" href="#">Novedades</a>
+                <a class="nav-link" href="#">Hombre</a>
+                <a class="nav-link" href="#">Mujer</a>
+            </nav>
+            <div class="flex items-center gap-6">
+                <button class="cursor-pointer">
+                    <span class="material-symbols-outlined">search</span>
+                </button>
+                <button class="cursor-pointer">
+                    <span class="material-symbols-outlined">person</span>
+                </button>
+                <button class="cursor-pointer">
+                    <span class="material-symbols-outlined">shopping_bag</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="min-h-screen pt-20 flex items-stretch">
+        <div class="hidden lg:block w-1/2 relative overflow-hidden bg-gray-100">
+            <img alt="Moda Perú" class="absolute inset-0 w-full h-full object-cover grayscale brightness-95" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDIpKc93NMSA55d2SiwpuVBaRo1J21IyHwHxQ2EHSQaGuuPfHNa4I7bzKPyNJIx7caYFpA0sCigHBD4xBDocI_j0g8AyuaxFIeeSwMH3baK_hFNbUKumTDaQcp8xsGdgX7M6kJ_kHlasPwjXF9QGynMUNw3Rv4FAMRB2AWc3TEHzKQCnZw59M2WyDUnHxlkuOwFtGOk03aeQVI_QrGe-C1yyCRKSBrt5U2NqN1Gyapc0G0_pyC2Kbal1Cznr2ofIeIpu53LyjBLIg"/>
+            <div class="absolute inset-0 bg-black/5"></div>
+            <div class="absolute bottom-12 left-12 max-w-sm">
+                <h2 class="text-5xl font-light text-white mb-4">Nueva Era.</h2>
+                <p class="text-white/80 uppercase tracking-widest text-xs">Exclusividad en cada tejido.</p>
+            </div>
+        </div>
+
+        <div class="w-full lg:w-1/2 flex flex-col justify-center items-center px-6 md:px-24 bg-white">
+            <div class="w-full max-w-md py-12">
+                <div class="mb-12">
+                    <h1 class="text-3xl font-medium mb-2 text-black">Bienvenido</h1>
+                    <p class="text-gray-500">Inicia sesión para continuar con tu experiencia.</p>
+                </div>
+
+                <form id="loginForm" class="space-y-8">
+                    <div class="relative">
+                        <label class="block text-xs uppercase tracking-wider text-gray-500 mb-1">Correo Electrónico</label>
+                        <input id="loginEmail" class="form-input text-black" placeholder="nombre@ejemplo.com" type="email" required/>
+                    </div>
+
+                    <div class="relative">
+                        <label class="block text-xs uppercase tracking-wider text-gray-500 mb-1">Contraseña</label>
+                        <input id="loginPassword" class="form-input text-black" placeholder="••••••••" type="password" required/>
+                    </div>
+
+                    <button type="submit" class="btn-primary">Iniciar Sesión</button>
+                </form>
+
+                <form id="registerForm" class="space-y-8 hidden">
+                    <div class="relative">
+                        <label class="block text-xs uppercase tracking-wider text-gray-500 mb-1">Nombre Completo</label>
+                        <input id="regName" class="form-input text-black" placeholder="Juan Pérez" type="text" required/>
+                    </div>
+
+                    <div class="relative">
+                        <label class="block text-xs uppercase tracking-wider text-gray-500 mb-1">Correo Electrónico</label>
+                        <input id="regEmail" class="form-input text-black" placeholder="juan@ejemplo.com" type="email" required/>
+                    </div>
+
+                    <div class="relative">
+                        <label class="block text-xs uppercase tracking-wider text-gray-500 mb-1">Contraseña</label>
+                        <input id="regPassword" class="form-input text-black" placeholder="••••••••" type="password" required/>
+                    </div>
+
+                    <button type="submit" class="btn-primary">Crear Cuenta</button>
+                    <button type="button" class="btn-secondary" onclick="showLogin()">Ya tengo una cuenta</button>
+                </form>
+
+                <div id="successMessage" class="hidden text-center py-8">
+                    <span class="material-symbols-outlined text-green-500 text-5xl">check_circle</span>
+                    <h2 class="text-3xl font-medium mt-4">¡Bienvenido!</h2>
+                    <p class="text-gray-500 mt-2">Tu sesión se ha iniciado correctamente.</p>
+                </div>
+
+                <div class="mt-8 flex items-center gap-4">
+                    <div class="h-[1px] flex-1 bg-gray-200"></div>
+                    <span class="text-xs uppercase tracking-widest text-gray-400">O continúa con</span>
+                    <div class="h-[1px] flex-1 bg-gray-200"></div>
+                </div>
+
+                <div class="mt-8 grid grid-cols-2 gap-4">
+                    <button class="flex items-center justify-center gap-2 p-3 border border-gray-200 text-xs uppercase tracking-wider font-semibold">
+                        Google
+                    </button>
+                    <button class="flex items-center justify-center gap-2 p-3 border border-gray-200 text-xs uppercase tracking-wider font-semibold">
+                        Facebook
+                    </button>
+                </div>
+
+                <p id="loginRegisterText" class="mt-12 text-center text-sm text-gray-500">
+                    ¿No tienes una cuenta?
+                    <a class="text-black font-semibold underline cursor-pointer" onclick="showRegister()">Regístrate gratis</a>
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-white border-t border-gray-200 w-full mt-0">
+        <div class="flex flex-col md:flex-row justify-between items-center py-12 px-8 max-w-7xl mx-auto gap-6">
+            <div class="text-lg font-black text-black uppercase">MODA PERÚ</div>
+            <div class="flex flex-wrap justify-center gap-6">
+                <a class="text-xs uppercase tracking-wider text-gray-500 cursor-pointer">Sostenibilidad</a>
+                <a class="text-xs uppercase tracking-wider text-gray-500 cursor-pointer">Términos</a>
+                <a class="text-xs uppercase tracking-wider text-gray-500 cursor-pointer">Envíos</a>
+                <a class="text-xs uppercase tracking-wider text-gray-500 cursor-pointer">Devoluciones</a>
+            </div>
+            <div class="text-[10px] tracking-widest uppercase text-gray-500">© 2024 MODA PERÚ. LIMA, PERÚ.</div>
+        </div>
+    </footer>
+
+    <script>
+        const users = JSON.parse(localStorage.getItem('modaPeruUsers') || '[]');
+
+        function getCurrentUser() {
+            return JSON.parse(localStorage.getItem('modaPeruCurrentUser') || 'null');
+        }
+
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            const user = users.find(u => u.email === email && u.password === password);
+            
+            if (user) {
+                localStorage.setItem('modaPeruCurrentUser', JSON.stringify(user));
+                document.getElementById('loginForm').classList.add('hidden');
+                document.getElementById('loginRegisterText').classList.add('hidden');
+                const successDiv = document.getElementById('successMessage');
+                successDiv.classList.remove('hidden');
+                successDiv.querySelector('h2').textContent = '¡Bienvenido!';
+                successDiv.querySelector('p').textContent = 'Tu sesión se ha iniciado correctamente.';
+            } else {
+                alert('Usuario no encontrado. Por favor regístrate primero.');
+            }
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            
+            if (password.length < 6) {
+                alert('La contraseña debe tener al menos 6 caracteres');
+                return;
+            }
+            
+            const existingUser = users.find(u => u.email === email);
+            if (existingUser) {
+                alert('El correo ya está registrado');
+                return;
+            }
+            
+            const newUser = { name, email, password };
+            users.push(newUser);
+            localStorage.setItem('modaPeruUsers', JSON.stringify(users));
+            localStorage.setItem('modaPeruCurrentUser', JSON.stringify(newUser));
+            
+            document.getElementById('registerForm').classList.add('hidden');
+            document.getElementById('loginRegisterText').classList.add('hidden');
+            const successDiv = document.getElementById('successMessage');
+            successDiv.classList.remove('hidden');
+            successDiv.querySelector('h2').textContent = '¡Cuenta Creada!';
+            successDiv.querySelector('p').textContent = 'Bienvenido a MODA PERÚ. Tu cuenta ha sido creada exitosamente.';
+        });
+
+        function showRegister() {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.remove('hidden');
+        }
+
+        function showLogin() {
+            document.getElementById('registerForm').classList.add('hidden');
+            document.getElementById('loginForm').classList.remove('hidden');
+        }
+
+        window.onload = function() {
+            const user = getCurrentUser();
+            if (user) {
+                document.getElementById('loginForm').classList.add('hidden');
+                document.getElementById('loginRegisterText').classList.add('hidden');
+                const successDiv = document.getElementById('successMessage');
+                successDiv.classList.remove('hidden');
+                successDiv.querySelector('h2').textContent = '¡Bienvenido de nuevo!';
+                successDiv.querySelector('p').textContent = 'Sesión iniciada como ' + user.email;
+            }
+        };
+    </script>
+</body>
+</html>
