@@ -50,7 +50,7 @@
             </div>
             <div class="flex items-center gap-6">
                 <div id="userMenu" class="hidden flex items-center gap-4">
-                    <span id="userEmail" class="text-xs text-gray-500 dark:text-gray-400"></span>
+                    <a id="userEmail" href="profile.html" class="text-xs text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white"></a>
                     <button onclick="logout()" class="text-xs text-gray-400 dark:text-gray-500 hover:text-black dark:hover:text-white">Cerrar</button>
                 </div>
                 <button id="loginBtn" class="icon-btn dark:text-white" onclick="goToLogin()">
@@ -90,7 +90,7 @@
                         </form>
                         <p class="mt-6 text-sm text-gray-500 dark:text-gray-400">
                             ¿No tienes cuenta? 
-                            <a href="#" onclick="showRegister()" class="text-black dark:text-white font-semibold underline">Regístrate gratis</a>
+                            <a href="register.html" class="text-black dark:text-white font-semibold underline">Regístrate gratis</a>
                         </p>
                     </div>
 
@@ -323,7 +323,6 @@
             document.getElementById('registerSection').classList.add('hidden');
             document.getElementById('loginSection').classList.remove('hidden');
         }
-        }
 
         // Navigation
         function goToCart() { window.location.href = 'cart.html'; }
@@ -441,6 +440,7 @@
                 showLoggedIn();
             }
         };
+        
     </script>
 </body>
 </html>
