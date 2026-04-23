@@ -3,12 +3,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MODA PERÚ - Mi Perfil</title>
+    <title>MODA PERÚ - Novedades</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇵🇪</text></svg>">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="styles.css">
-    <script id="tailwind-config">
+    <script>
         tailwind.config = {
             darkMode: "class",
             theme: {
@@ -23,34 +23,24 @@
         }
     </script>
 </head>
- <body class="font-body-md text-gray-900 dark:text-gray-100 bg-white dark:bg-black transition-colors duration-300">
+<body class="font-body-md text-gray-900 dark:text-gray-100 bg-white dark:bg-black transition-colors duration-300">
 
-    <!-- Modal -->
-    <div id="infoModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-        <div class="bg-white dark:bg-gray-900 max-w-lg w-full p-8 rounded-lg">
-            <div class="flex justify-between items-center mb-4">
-                <h2 id="modalTitle" class="text-xl font-bold text-black dark:text-white">Título</h2>
-                <button onclick="closeModal()" class="text-2xl dark:text-white">✕</button>
-            </div>
-            <div id="modalContent" class="text-gray-700 dark:text-gray-300"></div>
-        </div>
-    </div>
-
-    <!-- Header -->
+    <div class="loader" id="pageLoader"></div>
+    
     <header class="bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800 fixed top-0 z-50 w-full">
         <nav class="flex justify-between items-center h-20 px-8 max-w-7xl mx-auto w-full">
             <div class="flex items-center gap-12">
-                <a href="home.html" class="text-2xl font-bold tracking-tighter text-black dark:text-white">MODA PERÚ</a>
+                <a href="home.html" class="text-2xl font-bold tracking-tighter text-black dark:text-white hover:opacity-70 transition-all">MODA PERÚ</a>
                 <div class="hidden md:flex gap-8 items-center">
                     <a class="nav-link text-gray-600 dark:text-gray-400" href="home.html">Colección</a>
-                    <a class="nav-link text-gray-600 dark:text-gray-400" href="novedades.html">Novedades</a>
+                    <a class="nav-link active text-black dark:text-white" href="novedades.html">Novedades</a>
                     <a class="nav-link text-gray-600 dark:text-gray-400" href="hombre.html">Hombre</a>
                     <a class="nav-link text-gray-600 dark:text-gray-400" href="mujer.html">Mujer</a>
                 </div>
             </div>
             <div class="flex items-center gap-6">
                 <div id="userMenu" class="hidden flex items-center gap-4">
-                    <span id="userEmail" class="text-xs text-gray-500 dark:text-gray-400"></span>
+                    <a href="profile.html" id="userEmail" class="text-xs text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white"></a>
                     <button onclick="logout()" class="text-xs text-gray-400 dark:text-gray-500 hover:text-black dark:hover:text-white">Cerrar</button>
                 </div>
                 <button id="loginBtn" class="icon-btn dark:text-white" onclick="goToLogin()">
@@ -66,90 +56,63 @@
             </div>
         </nav>
     </header>
+    <div id="infoModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-900 max-w-lg w-full p-8 rounded-lg">
+            <div class="flex justify-between items-center mb-4">
+                <h2 id="modalTitle" class="text-xl font-bold text-black dark:text-white">Título</h2>
+                <button onclick="closeModal()" class="text-2xl dark:text-white">✕</button>
+            </div>
+            <div id="modalContent" class="text-gray-700 dark:text-gray-300"></div>
+        </div>
+    </div>
 
-    <!-- Main Content -->
-    <main class="pt-32 pb-20 max-w-7xl mx-auto px-8">
-        <div class="max-w-2xl mx-auto">
-            <h1 class="headline-lg text-black dark:text-white mb-8">Mi Perfil</h1>
-
-            <!-- User Info Card -->
-            <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-8 mb-8">
-                <div class="flex items-center gap-6 mb-6">
-                    <div class="w-20 h-20 bg-black dark:bg-white rounded-full flex items-center justify-center">
-                        <span class="material-symbols-outlined text-white dark:text-black text-3xl">person</span>
-                    </div>
-                    <div>
-                        <h2 id="profileName" class="text-xl font-semibold text-black dark:text-white">Usuario</h2>
-                        <p id="profileEmail" class="text-sm text-gray-500 dark:text-gray-400">email@ejemplo.com</p>
-                    </div>
+    <main class="pt-28 pb-20 max-w-7xl mx-auto px-8">
+        <h1 class="headline-lg text-black dark:text-white mb-8">Novedades</h1>
+        
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div class="product-card flex flex-col gap-4" onclick="goToProduct()">
+                <div class="aspect-[3/4] overflow-hidden bg-gray-100 dark:bg-gray-900">
+                    <img alt="Abrigo" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1debAKjt8bY8QJSHbssGk9uZaU-dWVMOiJ_WiTBndJDmkV-SukSCkhfSfBkxkdxaRYtEbbv01pNO28G4KKTe8dvtYm7dgyzS_hYap3duxTHHjGrf5i6G-fg0mw6P6RQjdVqO-rleLZWlv9KzCWMpYkJjWEqHSVXOmwQXbafVLFuXheCfdbtxFabySM-5E3rLvCyTkNEEyknxFAFQODRxkN6pVaxADAGlaAGsV0-MH9AudF9XJTu8GPSGhV8Sa0NduoXxXSA4p5w"/>
                 </div>
-
-                <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
-                    <h3 class="label-caps text-gray-500 dark:text-gray-400 uppercase mb-4">Información Personal</h3>
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm text-gray-600 dark:text-gray-400 mb-1">Nombre completo</label>
-                            <p id="displayName" class="text-black dark:text-white">-</p>
-                        </div>
-                        <div>
-                            <label class="block text-sm text-gray-600 dark:text-gray-400 mb-1">Correo electrónico</label>
-                            <p id="displayEmail" class="text-black dark:text-white">-</p>
-                        </div>
-                    </div>
+                <div>
+                    <p class="category-tag">NUEVO</p>
+                    <h4 class="product-name">Abrigo Alpaca</h4>
+                    <p class="product-price">S/ 1,450</p>
                 </div>
             </div>
-
-            <!-- Quick Actions -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                <button onclick="goToCart()" class="p-6 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors text-left">
-                    <div class="flex items-center gap-4">
-                        <span class="material-symbols-outlined text-gray-600 dark:text-gray-400">shopping_bag</span>
-                        <div>
-                            <h3 class="font-semibold text-black dark:text-white">Mis Pedidos</h3>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">Ver historial de compras</p>
-                        </div>
-                    </div>
-                </button>
-                <button class="p-6 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors text-left">
-                    <div class="flex items-center gap-4">
-                        <span class="material-symbols-outlined text-gray-600 dark:text-gray-400">favorite</span>
-                        <div>
-                            <h3 class="font-semibold text-black dark:text-white">Lista de Deseos</h3>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">Productos guardados</p>
-                        </div>
-                    </div>
-                </button>
-                <button class="p-6 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors text-left">
-                    <div class="flex items-center gap-4">
-                        <span class="material-symbols-outlined text-gray-600 dark:text-gray-400">location_on</span>
-                        <div>
-                            <h3 class="font-semibold text-black dark:text-white">Direcciones</h3>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">Gestionar envíos</p>
-                        </div>
-                    </div>
-                </button>
-                <button class="p-6 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors text-left">
-                    <div class="flex items-center gap-4">
-                        <span class="material-symbols-outlined text-gray-600 dark:text-gray-400">settings</span>
-                        <div>
-                            <h3 class="font-semibold text-black dark:text-white">Configuración</h3>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">Preferencias de cuenta</p>
-                        </div>
-                    </div>
-                </button>
+            <div class="product-card flex flex-col gap-4">
+                <div class="aspect-[3/4] overflow-hidden bg-gray-100 dark:bg-gray-900">
+                    <img alt="Pantalones" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAV-tU7iqO4LVXPauz3EVU0N-m8qEAknSeaVxqjzWjz1al9ecJahtFG0BrvMpzx0jbTd6hf07PsXmyAQ8XQ_k5xsbiVzvBaikZ-XzShbhAOQ5PpARlD8mPo2-vHV441AR1TlCykGg3trYLPC3HtgCBag4rNlSNYj8VR48mO4VHyMHfo349sf5r-kBANrJ2g15PM6bYjgAFfWaHL7u7cGZ3HMBt7_eQhsnZ-4fvVKL7EwnzTJlS8bVD09ySyQYiMMsZwPD7QYZgHag"/>
+                </div>
+                <div>
+                    <p class="category-tag">NUEVO</p>
+                    <h4 class="product-name">Tailored Pant</h4>
+                    <p class="product-price">S/ 480</p>
+                </div>
             </div>
-
-            <!-- Current Cart -->
-            <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-6">
-                <h2 class="headline-lg text-black dark:text-white mb-4">Tu Carrito Actual</h2>
-                <div id="cartSummary">
-                    <p class="text-gray-500 dark:text-gray-400">Cargando...</p>
+            <div class="product-card flex flex-col gap-4" onclick="window.location.href='mujer.html'">
+                <div class="aspect-[3/4] overflow-hidden bg-gray-100 dark:bg-gray-900">
+                    <img alt="Bufanda" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnxz7Qol2PMB1g4h6z8aAJHBvFalfz6uaZwnKA3r8e_1ZIEdJ3dTNxJWCaZ3rVDeK7vbfBHCuWx7nBL-q3KkKBG5RHzJ0w9rZY0s0GzlGdCBRi03W7yc_ohK84NNNjJy3Ci5_mD2YF0NX4zV_NsdBCc3oGWQuez_Pl7Gt5a3njvsTQaso33_SAwbOl2yjDsPIT5D9l9hkDmx38N5bab2ZKQjJHE1SdTjYfcvrOnsDpxIW-qlMatszUhP0N_bk76iJ_wrozMT4Jkw"/>
+                </div>
+                <div>
+                    <p class="category-tag">NUEVO</p>
+                    <h4 class="product-name">Bufanda Infinity</h4>
+                    <p class="product-price">S/ 220</p>
+                </div>
+            </div>
+            <div class="product-card flex flex-col gap-4">
+                <div class="aspect-[3/4] overflow-hidden bg-gray-100 dark:bg-gray-900">
+                    <img alt="Suéter" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDtyVkLGf_UKnXJgLRtMTCDUQx-AZIM_Ka5gSPcv63bUDhbGheq1yjhTFZCnu_U9qX6dj5Wq09aIf_z5VkktOr5gJNjDDPT9cDgWM7uRgrtS0dIIlpUh2NwKCZDfTJVl3VtfLHMXbaPH4nlztgLKu1qUdPpyQxbjucg3tMCuKDu6bNxdFX6h6fUp8vPO9O74oOvHhTv1GTIUNWDoZTbEG6DUJHQ3DK8Jmunk4ooo-SKmTAQlPRDoyAzRvIzZGhocLybOB4-RxIjAg"/>
+                </div>
+                <div>
+                    <p class="category-tag">NUEVO</p>
+                    <h4 class="product-name">Suéter Crewneck</h4>
+                    <p class="product-price">S/ 390</p>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- Footer -->
     <footer class="bg-white dark:bg-black border-t border-gray-200 dark:border-gray-800 w-full mt-20">
         <div class="flex flex-col md:flex-row justify-between items-center py-12 px-8 max-w-7xl mx-auto gap-6">
             <div class="text-lg font-black text-black dark:text-white uppercase">MODA PERÚ</div>
@@ -160,13 +123,11 @@
                 <a class="footer-link text-gray-600 dark:text-gray-400 cursor-pointer" onclick="showModal('devoluciones')">Devoluciones</a>
                 <a class="footer-link text-gray-600 dark:text-gray-400 cursor-pointer" onclick="showModal('tallas')">Guía de Tallas</a>
             </div>
-            <div class="text-[10px] tracking-widest uppercase text-gray-500 dark:text-gray-500">© 2024 MODA PERÚ. LIMA, PERÚ.</div>
+            <div class="text-[10px] tracking-widest uppercase text-gray-500">© 2024 MODA PERÚ. LIMA, PERÚ.</div>
         </div>
     </footer>
 
-    <!-- JavaScript -->
     <script>
-        // Theme Management
         function toggleDarkMode() {
             const html = document.documentElement;
             const icon = document.getElementById('themeIcon');
@@ -206,23 +167,19 @@
             const user = getCurrentUser();
             const userMenu = document.getElementById('userMenu');
             const loginBtn = document.getElementById('loginBtn');
+            const userEmail = document.getElementById('userEmail');
 
             if (user) {
                 userMenu.classList.remove('hidden');
                 loginBtn.classList.add('hidden');
-                document.getElementById('userEmail').textContent = user.name || user.email;
-                document.getElementById('profileName').textContent = user.name || 'Usuario';
-                document.getElementById('profileEmail').textContent = user.email || '';
-                document.getElementById('displayName').textContent = user.name || 'No especificado';
-                document.getElementById('displayEmail').textContent = user.email || 'No especificado';
+                if (userEmail) userEmail.textContent = user.name || user.email;
             } else {
                 userMenu.classList.add('hidden');
                 loginBtn.classList.remove('hidden');
-                window.location.href = 'index.html';
             }
         }
 
-        // Cart Management
+        // Cart
         function getCartItems() {
             return JSON.parse(localStorage.getItem('modaPeruCart') || '[]');
         }
@@ -240,39 +197,12 @@
             }
         }
 
-        function updateCartSummary() {
-            const cart = getCartItems();
-            const container = document.getElementById('cartSummary');
-            if (cart.length === 0) {
-                container.innerHTML = '<p class="text-gray-500 dark:text-gray-400">Tu carrito está vacío</p>';
-                return;
-            }
-            const total = cart.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
-            container.innerHTML = `
-                <div class="space-y-3">
-                    ${cart.map((item, index) => `
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <p class="font-medium text-black dark:text-white">${item.name}</p>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">Talla: ${item.size} • Cantidad: ${item.quantity || 1}</p>
-                            </div>
-                            <p class="font-semibold text-black dark:text-white">S/ ${(item.price * (item.quantity || 1)).toLocaleString()}</p>
-                        </div>
-                    `).join('')}
-                    <div class="border-t border-gray-200 dark:border-gray-700 pt-3 flex justify-between items-center">
-                        <span class="font-semibold text-black dark:text-white">Total</span>
-                        <span class="font-bold text-lg text-black dark:text-white">S/ ${total.toLocaleString()}</span>
-                    </div>
-                    <button onclick="goToCart()" class="btn-primary w-full mt-4">Ver Carrito</button>
-                </div>
-            `;
-        }
-
         function goToCart() { window.location.href = 'cart.html'; }
         function goToLogin() {
             const user = getCurrentUser();
             window.location.href = user ? 'profile.html' : 'index.html';
         }
+        function goToProduct() { window.location.href = 'hombre.html'; }
 
         // Modal
         const modalData = {
@@ -361,24 +291,21 @@
         };
 
         function showModal(page) {
-            const modalDataPage = modalData[page];
-            if (modalDataPage) {
-                document.getElementById('modalTitle').textContent = modalDataPage.title;
-                document.getElementById('modalContent').innerHTML = modalDataPage.content;
-                document.getElementById('infoModal').classList.remove('hidden');
-            }
+            document.getElementById('modalTitle').textContent = modalData[page].title;
+            document.getElementById('modalContent').innerHTML = modalData[page].content;
+            document.getElementById('infoModal').classList.remove('hidden');
         }
 
-        function closeModal() {
-            document.getElementById('infoModal').classList.add('hidden');
-        }
+        function closeModal() { document.getElementById('infoModal').classList.add('hidden'); }
 
-        // Initialize
+        function goToCart() { window.location.href = 'cart.html'; }
+        function goToLogin() { window.location.href = 'index.html'; }
+        function goToProduct() { window.location.href = 'hombre.html'; }
+
         window.onload = function() {
             loadTheme();
             updateUserMenu();
             updateCartBadge();
-            updateCartSummary();
         };
     </script>
 </body>

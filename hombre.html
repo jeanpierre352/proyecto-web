@@ -3,12 +3,12 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MODA PERÚ - Iniciar Sesión</title>
+    <title>MODA PERÚ - Abrigo de Alpaca Minimalista</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇵🇪</text></svg>">
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries" defer></script>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="styles.css">
-    <script id="tailwind-config" defer>
+    <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
             theme: {
@@ -50,7 +50,7 @@
             </div>
             <div class="flex items-center gap-6">
                 <div id="userMenu" class="hidden flex items-center gap-4">
-                    <a id="userEmail" href="profile.html" class="text-xs text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white"></a>
+                    <a href="profile.html" id="userEmail" class="text-xs text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white"></a>
                     <button onclick="logout()" class="text-xs text-gray-400 dark:text-gray-500 hover:text-black dark:hover:text-white">Cerrar</button>
                 </div>
                 <button id="loginBtn" class="icon-btn dark:text-white" onclick="goToLogin()">
@@ -69,93 +69,113 @@
 
     <!-- Main Content -->
     <main class="pt-32 pb-20 max-w-7xl mx-auto px-8">
-        <div class="max-w-4xl mx-auto">
-            <div id="loginSection">
-                <h1 class="headline-lg text-black dark:text-white mb-8 text-center">Bienvenido a MODA PERÚ</h1>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
-                    <!-- Login Form -->
-                    <div class="bg-gray-50 dark:bg-gray-900 p-8 rounded-lg">
-                        <h2 class="headline-md text-black dark:text-white mb-6">Iniciar Sesión</h2>
-                        <form onsubmit="handleLogin(event)">
-                            <div class="mb-6">
-                                <label class="block label-caps text-gray-500 dark:text-gray-400 mb-2">Correo Electrónico</label>
-                                <input type="email" id="loginEmail" class="form-input" placeholder="nombre@ejemplo.com" required>
-                            </div>
-                            <div class="mb-6">
-                                <label class="block label-caps text-gray-500 dark:text-gray-400 mb-2">Contraseña</label>
-                                <input type="password" id="loginPassword" class="form-input" placeholder="••••••••" required>
-                            </div>
-                            <button type="submit" class="btn-primary w-full">Iniciar Sesión</button>
-                        </form>
-                        <p class="mt-6 text-sm text-gray-500 dark:text-gray-400">
-                            ¿No tienes cuenta? 
-                            <a href="register.html" class="text-black dark:text-white font-semibold underline">Regístrate gratis</a>
-                        </p>
-                    </div>
+        <div class="max-w-3xl mx-auto">
+            <!-- Breadcrumb -->
+            <nav class="mb-8">
+                <ol class="flex items-center gap-2 text-sm text-gray-500">
+                    <li><a href="home.html" class="hover:text-black dark:hover:text-white">Inicio</a></li>
+                    <li>/</li>
+                    <li><a href="hombre.html" class="hover:text-black dark:hover:text-white">Hombre</a></li>
+                    <li>/</li>
+                    <li class="text-black dark:text-white">Abrigo de Alpaca Minimalista</li>
+                </ol>
+            </nav>
 
-                    <!-- Register Form -->
-                    <div id="registerSection" class="hidden bg-gray-50 dark:bg-gray-900 p-8 rounded-lg">
-                        <h2 class="headline-md text-black dark:text-white mb-6">Crear Cuenta</h2>
-                        <form onsubmit="handleRegister(event)">
-                            <div class="mb-6">
-                                <label class="block label-caps text-gray-500 dark:text-gray-400 mb-2">Nombre completo</label>
-                                <input type="text" id="registerName" class="form-input" placeholder="Tu nombre" required>
-                            </div>
-                            <div class="mb-6">
-                                <label class="block label-caps text-gray-500 dark:text-gray-400 mb-2">Correo Electrónico</label>
-                                <input type="email" id="registerEmail" class="form-input" placeholder="nombre@ejemplo.com" required>
-                            </div>
-                            <div class="mb-6">
-                                <label class="block label-caps text-gray-500 dark:text-gray-400 mb-2">Contraseña</label>
-                                <input type="password" id="registerPassword" class="form-input" placeholder="Mínimo 6 caracteres" required minlength="6">
-                            </div>
-                            <div class="mb-6">
-                                <label class="block label-caps text-gray-500 dark:text-gray-400 mb-2">Confirmar Contraseña</label>
-                                <input type="password" id="registerConfirm" class="form-input" placeholder="Repite tu contraseña" required>
-                            </div>
-                            <button type="submit" class="btn-primary w-full">Crear Cuenta</button>
-                        </form>
-                        <p class="mt-6 text-sm text-gray-500 dark:text-gray-400">
-                            ¿Ya tienes cuenta? 
-                            <a href="#" onclick="showLogin()" class="text-black dark:text-white font-semibold underline">Inicia sesión</a>
-                        </p>
-                    </div>
+            <!-- Product Header -->
+            <header class="mb-8">
+                <span class="label-caps text-gray-500 dark:text-gray-400 uppercase">Edición Limitada</span>
+                <h1 class="headline-lg text-black dark:text-white mt-2 mb-4">Abrigo de Alpaca Minimalista</h1>
+                <p class="body-lg text-gray-600 dark:text-gray-400">S/ 1,450.00</p>
+            </header>
 
-                    <!-- Welcome/Info -->
-                    <div class="flex flex-col justify-center">
-                        <div class="mb-8">
-                            <h3 class="headline-lg text-black dark:text-white mb-4">Tu estilo, nuestra pasión</h3>
-                            <p class="body-md text-gray-600 dark:text-gray-400">
-                                Descubre prendas exclusivas de alpaca, elaboradas artesanalmente por comunidades del Perú. 
-                                Cada pieza cuenta una historia de tradición y calidad.
-                            </p>
-                        </div>
-                        <div class="space-y-4">
-                            <div class="flex items-center gap-4">
-                                <span class="material-symbols-outlined text-gray-600 dark:text-gray-400">check_circle</span>
-                                <span class="body-md text-gray-700 dark:text-gray-300">Envío gratis en compras mayores a S/ 500</span>
-                            </div>
-                            <div class="flex items-center gap-4">
-                                <span class="material-symbols-outlined text-gray-600 dark:text-gray-400">check_circle</span>
-                                <span class="body-md text-gray-700 dark:text-gray-300">Devoluciones hasta 30 días</span>
-                            </div>
-                            <div class="flex items-center gap-4">
-                                <span class="material-symbols-outlined text-gray-600 dark:text-gray-400">check_circle</span>
-                                <span class="body-md text-gray-700 dark:text-gray-300">Calidad certificada y sostenible</span>
-                            </div>
-                        </div>
+            <!-- Product Images Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+                <div class="aspect-[3/4] overflow-hidden bg-gray-100 dark:bg-gray-900">
+                    <img alt="Abrigo de Alpaca Minimalista" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1debAKjt8bY8QJSHbssGk9uZaU-dWVMOiJ_WiTBndJDmkV-SukSCkhfSfBkxkdxaRYtEbbv01pNO28G4KKTe8dvtYm7dgyzS_hYap3duxTHHjGrf5i6G-fg0mw6P6RQjdVqO-rleLZWlv9KzCWMpYkJjWEqHSVXOmwQXbafVLFuXheCfdbtxFabySM-5E3rLvCyTkNEEyknxFAFQODRxkN6pVaxADAGlaAGsV0-MH9AudF9XJTu8GPSGhV8Sa0NduoXxXSA4p5w"/>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="aspect-[3/4] overflow-hidden bg-gray-100 dark:bg-gray-900">
+                        <img alt="Detalle del abrigo" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBGJoTFMNmyyNKPw-G_lAGcEG22Iozp4Q7HrjfTmp1RL-AAbIy3QJ9Z0FEtRzUktNrjwyGrcSZ8n7cjTHqy9iJ5Bma5ir2MjnCx4T25YKag026jeQ-w5R8jP6vAwIPu-_2unA4h_EDZWNH_FOWMbtR08s5ygh17veaHfwsp2P4ao2r4BNKonddLmz8kaWBlWm9Om4U9kq75jCsTnDeroaEndfoCUTe8maAwrPHFJ3jim2gjy0SZ2fD8QKswFbbZKZMvlB1jWVlqzw"/>
+                    </div>
+                    <div class="aspect-[3/4] overflow-hidden bg-gray-100 dark:bg-gray-900">
+                        <img alt="Vista lateral" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBG3ekLgmifFYfLht1k33E2b1onoHcDnfTFWt8Ry6EdTgLXsiuBSOBeQbTx41dikVXtObkaZt0Fzx0wMJwINfdddC97Fs5_QpkzCIrDCRavojbkwdH2gvbL4cL4RW301lt-oeI_E0PzQPpG6qLVQBHgnR6hl4qc1a2l3ItixC31NZ3k9ASeGvrqneVqgpvMqVRHA_d1C6C8KjyUuD2VMH0ctSTf3zQ24lthdcM2kuas5G51LUUhk3pe4tdODNTpoWZBHj1Dj4EiCw"/>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Product Description -->
+            <div class="prose prose-gray dark:prose-invert max-w-none mb-12">
+                <p class="body-md text-gray-600 dark:text-gray-400 leading-relaxed">
+                    Confeccionado artesanalmente en Lima con la fibra más fina de alpaca suri. Este abrigo representa el lujo silencioso: una silueta estructurada, costuras invisibles y una caída impecable diseñada para perdurar.
+                </p>
+                <ul class="flex flex-col gap-3 mt-6">
+                    <li class="flex items-center gap-3 label-caps uppercase text-gray-700 dark:text-gray-300">
+                        <span class="w-1.5 h-1.5 bg-black dark:bg-white rounded-full"></span>
+                        100% Fibra de Alpaca Suri
+                    </li>
+                    <li class="flex items-center gap-3 label-caps uppercase text-gray-700 dark:text-gray-300">
+                        <span class="w-1.5 h-1.5 bg-black dark:bg-white rounded-full"></span>
+                        Forro de seda natural
+                    </li>
+                    <li class="flex items-center gap-3 label-caps uppercase text-gray-700 dark:text-gray-300">
+                        <span class="w-1.5 h-1.5 bg-black dark:bg-white rounded-full"></span>
+                        Hecho a mano en Perú
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Size Selector -->
+            <div class="mb-8">
+                <div class="flex justify-between items-center mb-4">
+                    <label class="label-caps text-black dark:text-white uppercase">Talla</label>
+                    <button onclick="showModal('tallas')" class="text-[10px] label-caps underline tracking-widest text-gray-500 hover:text-black dark:hover:text-white">Guía de Tallas</button>
+                </div>
+                <div class="grid grid-cols-4 gap-2">
+                    <button class="size-button" onclick="selectSize(this)">XS</button>
+                    <button class="size-button selected" onclick="selectSize(this)">S</button>
+                    <button class="size-button" onclick="selectSize(this)">M</button>
+                    <button class="size-button" onclick="selectSize(this)">L</button>
+                </div>
+            </div>
+
+            <!-- Color Selector -->
+            <div class="mb-8">
+                <label class="label-caps text-black dark:text-white uppercase mb-4 block">Color: Negro Carbón</label>
+                <div class="flex gap-3">
+                    <button class="w-8 h-8 bg-black ring-1 ring-offset-2 ring-black rounded-full"></button>
+                    <button class="w-8 h-8 bg-[#2C2C2E] ring-1 ring-neutral-100 rounded-full"></button>
+                    <button class="w-8 h-8 bg-[#E5E5E1] ring-1 ring-neutral-100 rounded-full"></button>
+                </div>
+            </div>
+
+            <!-- Add to Cart Buttons -->
+            <div class="flex flex-col sm:flex-row gap-4 mb-8">
+                <button class="btn-primary flex-1" onclick="addToCart()">
+                    Añadir al carrito
+                </button>
+                <button class="wishlist-btn flex-1" onclick="addToWishlist()">
+                    Lista de deseos
+                </button>
+            </div>
+
+            <!-- Delivery Info -->
+            <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
+                <div class="flex gap-4 items-start mb-4">
+                    <span class="material-symbols-outlined text-gray-400">local_shipping</span>
+                    <div>
+                        <p class="delivery-label">Envío Express Gratis</p>
+                        <p class="delivery-detail">Lima: 24-48 horas. Provincias: 3-5 días.</p>
+                    </div>
+                </div>
+                <div class="flex gap-4 items-start">
+                    <span class="material-symbols-outlined text-gray-400">assignment_return</span>
+                    <div>
+                        <p class="delivery-label">Devoluciones Sencillas</p>
+                        <p class="delivery-detail">Hasta 30 días para cambios o devoluciones.</p>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <!-- Success Message (shown when logged in) -->
-        <div id="successMessage" class="hidden text-center py-16">
-            <h2 class="headline-lg text-black dark:text-white mb-4">¡Bienvenido de nuevo!</h2>
-            <p id="welcomeEmail" class="body-lg text-gray-600 dark:text-gray-400 mb-8"></p>
-            <button onclick="window.location.href='home.html'" class="btn-primary">Ir a MODA PERÚ</button>
-        </div>
-    </div>
     </main>
 
     <!-- Footer -->
@@ -173,6 +193,7 @@
         </div>
     </footer>
 
+    <!-- JavaScript -->
     <script>
         // Theme Management
         function toggleDarkMode() {
@@ -191,9 +212,10 @@
 
         function loadTheme() {
             const theme = localStorage.getItem('modaPeruTheme') || 'light';
+            const html = document.documentElement;
+            const icon = document.getElementById('themeIcon');
             if (theme === 'dark') {
-                document.documentElement.classList.add('dark');
-                const icon = document.getElementById('themeIcon');
+                html.classList.add('dark');
                 if (icon) icon.textContent = 'light_mode';
             }
         }
@@ -201,10 +223,6 @@
         // User Management
         function getCurrentUser() {
             return JSON.parse(localStorage.getItem('modaPeruCurrentUser') || 'null');
-        }
-
-        function setCurrentUser(user) {
-            localStorage.setItem('modaPeruCurrentUser', JSON.stringify(user));
         }
 
         function logout() {
@@ -218,6 +236,7 @@
             const userMenu = document.getElementById('userMenu');
             const loginBtn = document.getElementById('loginBtn');
             const userEmail = document.getElementById('userEmail');
+            
             if (user) {
                 userMenu.classList.remove('hidden');
                 loginBtn.classList.add('hidden');
@@ -226,12 +245,19 @@
                 userMenu.classList.add('hidden');
                 loginBtn.classList.remove('hidden');
             }
+        }
+
+        // Cart Management
+        function getCartItems() {
+            return JSON.parse(localStorage.getItem('modaPeruCart') || '[]');
+        }
+
         function updateCartBadge() {
-            const count = getCartCount();
+            const cart = getCartItems();
             const badge = document.getElementById('cartBadge');
             if (badge) {
-                if (count > 0) {
-                    badge.textContent = count;
+                if (cart.length > 0) {
+                    badge.textContent = cart.length;
                     badge.classList.remove('hidden');
                 } else {
                     badge.classList.add('hidden');
@@ -239,89 +265,40 @@
             }
         }
 
-        function showToast(message, type = 'success') {
-            let container = document.getElementById('toast-container');
-            if (!container) {
-                container = document.createElement('div');
-                container.id = 'toast-container';
-                container.className = 'toast-container';
-                document.body.appendChild(container);
-            }
-            const toast = document.createElement('div');
-            toast.className = `toast ${type}`;
-            toast.textContent = message;
-            container.appendChild(toast);
-            requestAnimationFrame(() => toast.classList.add('show'));
-            setTimeout(() => {
-                toast.classList.remove('show');
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
-        }
-
-        // Auth Handlers
-        function handleLogin(e) {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
-
-            const users = JSON.parse(localStorage.getItem('modaPeruUsers') || '[]');
-            const user = users.find(u => u.email === email && u.password === password);
-
-            if (user) {
-                setCurrentUser({ name: user.name, email: user.email });
-                showLoggedIn();
-                showToast('Inicio de sesión exitoso', 'success');
-            } else {
-                showToast('Credenciales incorrectas', 'error');
-            }
-        }
-
-        function handleRegister(e) {
-            e.preventDefault();
-            const name = document.getElementById('registerName').value;
-            const email = document.getElementById('registerEmail').value;
-            const password = document.getElementById('registerPassword').value;
-            const confirm = document.getElementById('registerConfirm').value;
-
-            if (password !== confirm) {
-                showToast('Las contraseñas no coinciden', 'error');
-                return;
-            }
-
-            const users = JSON.parse(localStorage.getItem('modaPeruUsers') || '[]');
-            if (users.find(u => u.email === email)) {
-                showToast('Ya existe una cuenta con este correo', 'error');
-                return;
-            }
-
-            const newUser = { name, email, password };
-            users.push(newUser);
-            localStorage.setItem('modaPeruUsers', JSON.stringify(users));
-            setCurrentUser({ name, email });
-            showToast('Cuenta creada exitosamente', 'success');
-            showLoggedIn();
-        }
-
-        function showLoggedIn() {
-            document.getElementById('loginSection').classList.add('hidden');
-            document.getElementById('registerSection').classList.add('hidden');
-            const successMessage = document.getElementById('successMessage');
-            const welcomeEmail = document.getElementById('welcomeEmail');
+        function addToCart() {
             const user = getCurrentUser();
-            if (user && welcomeEmail) {
-                welcomeEmail.textContent = 'Sesión iniciada como ' + user.email;
+            if (!user) {
+                showToast('Por favor inicia sesión para añadir productos al carrito', 'error');
+                setTimeout(() => window.location.href = 'index.html', 1500);
+                return;
             }
-            successMessage.classList.remove('hidden');
+
+            let cartItems = getCartItems();
+            const selectedSize = document.querySelector('.size-button.selected');
+            const size = selectedSize ? selectedSize.textContent : 'S';
+
+            cartItems.push({
+                id: 1,
+                name: 'Abrigo de Alpaca Minimalista',
+                price: 1450,
+                image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD1debAKjt8bY8QJSHbssGk9uZaU-dWVMOiJ_WiTBndJDmkV-SukSCkhfSfBkxkdxaRYtEbbv01pNO28G4KKTe8dvtYm7dgyzS_hYap3duxTHHjGrf5i6G-fg0mw6P6RQjdVqO-rleLZWlv9KzCWMpYkJjWEqHSVXOmwQXbafVLFuXheCfdbtxFabySM-5E3rLvCyTkNEEyknxFAFQODRxkN6pVaxADAGlaAGsV0-MH9AudF9XJTu8GPSGhV8Sa0NduoXxXSA4p5w',
+                size: size,
+                quantity: 1
+            });
+
+            localStorage.setItem('modaPeruCart', JSON.stringify(cartItems));
+            showToast('Producto añadido al carrito');
+            updateCartBadge();
         }
 
-        function showRegister() {
-            document.getElementById('loginSection').classList.add('hidden');
-            document.getElementById('registerSection').classList.remove('hidden');
-        }
-
-        function showLogin() {
-            document.getElementById('registerSection').classList.add('hidden');
-            document.getElementById('loginSection').classList.remove('hidden');
+        function addToWishlist() {
+            const user = getCurrentUser();
+            if (!user) {
+                showToast('Por favor inicia sesión para añadir a tu lista de deseos', 'error');
+                setTimeout(() => window.location.href = 'index.html', 1500);
+                return;
+            }
+            showToast('Producto añadido a tu lista de deseos');
         }
 
         // Navigation
@@ -331,7 +308,7 @@
             window.location.href = user ? 'profile.html' : 'index.html';
         }
 
-        // Modal Data (same as other pages)
+        // Modal
         const modalData = {
             sostenibilidad: {
                 title: 'Sostenibilidad',
@@ -418,10 +395,10 @@
         };
 
         function showModal(page) {
-            const data = modalData[page];
-            if (data) {
-                document.getElementById('modalTitle').textContent = data.title;
-                document.getElementById('modalContent').innerHTML = data.content;
+            const modalDataPage = modalData[page];
+            if (modalDataPage) {
+                document.getElementById('modalTitle').textContent = modalDataPage.title;
+                document.getElementById('modalContent').innerHTML = modalDataPage.content;
                 document.getElementById('infoModal').classList.remove('hidden');
             }
         }
@@ -430,17 +407,41 @@
             document.getElementById('infoModal').classList.add('hidden');
         }
 
+        function selectSize(button) {
+            document.querySelectorAll('.size-button').forEach(btn => {
+                btn.classList.remove('selected', 'bg-black', 'text-white', 'border-black');
+                btn.classList.add('border-neutral-200', 'dark:border-neutral-700');
+            });
+            button.classList.add('selected');
+            button.classList.remove('border-neutral-200', 'dark:border-neutral-700');
+            button.classList.add('bg-black', 'text-white', 'border-black');
+        }
+
+        function showToast(message, type = 'success') {
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                container.className = 'toast-container';
+                document.body.appendChild(container);
+            }
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+            requestAnimationFrame(() => toast.classList.add('show'));
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
         // Initialize
         window.onload = function() {
             loadTheme();
             updateUserMenu();
             updateCartBadge();
-            const user = getCurrentUser();
-            if (user) {
-                showLoggedIn();
-            }
         };
-        
     </script>
 </body>
 </html>

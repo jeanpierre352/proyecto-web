@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html class="light" lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MODA PERÚ - Crear Cuenta</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇵🇪</text></svg>">
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries" defer></script>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="styles.css">
+    <script id="tailwind-config" defer>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    fontFamily: {
+                        "label-caps": ["Calibri", "sans-serif"],
+                        "headline-lg": ["Calibri", "sans-serif"],
+                        "body-md": ["Calibri", "sans-serif"]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="font-body-md text-gray-900 dark:text-gray-100 bg-white dark:bg-black transition-colors duration-300">
+    <!-- Header -->
+    <header class="bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800 fixed top-0 z-50 w-full">
+        <nav class="flex justify-between items-center h-20 px-8 max-w-7xl mx-auto w-full">
+            <div class="flex items-center gap-12">
+                <a href="home.html" class="text-2xl font-bold tracking-tighter text-black dark:text-white">MODA PERÚ</a>
+            </div>
+            <div class="flex items-center gap-6">
+                <button id="loginBtn" class="icon-btn dark:text-white" onclick="window.location.href='index.html'">
+                    <span class="material-symbols-outlined" data-icon="person">person</span>
+                </button>
+                <button class="icon-btn dark:text-white" onclick="toggleDarkMode()">
+                    <span id="themeIcon" class="material-symbols-outlined" data-icon="dark_mode">dark_mode</span>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-32 pb-20 max-w-7xl mx-auto px-8">
+        <div class="max-w-4xl mx-auto">
+            <div class="bg-gray-50 dark:bg-gray-900 p-8 rounded-lg">
+                <h1 class="headline-lg text-black dark:text-white mb-8 text-center">Crear Cuenta</h1>
+                
+                <form onsubmit="handleRegister(event)">
+                    <div class="mb-6">
+                        <label class="block label-caps text-gray-500 dark:text-gray-400 mb-2">Nombre completo</label>
+                        <input type="text" id="registerName" class="form-input" placeholder="Tu nombre" required>
+                    </div>
+                    <div class="mb-6">
+                        <label class="block label-caps text-gray-500 dark:text-gray-400 mb-2">Correo Electrónico</label>
+                        <input type="email" id="registerEmail" class="form-input" placeholder="nombre@ejemplo.com" required>
+                    </div>
+                    <div class="mb-6">
+                        <label class="block label-caps text-gray-500 dark:text-gray-400 mb-2">Contraseña</label>
+                        <input type="password" id="registerPassword" class="form-input" placeholder="Mínimo 6 caracteres" required minlength="6">
+                    </div>
+                    <div class="mb-6">
+                        <label class="block label-caps text-gray-500 dark:text-gray-400 mb-2">Confirmar Contraseña</label>
+                        <input type="password" id="registerConfirm" class="form-input" placeholder="Repite tu contraseña" required>
+                    </div>
+                    <button type="submit" class="btn-primary w-full">Crear Cuenta</button>
+                </form>
+                
+                <p class="mt-6 text-sm text-gray-500 dark:text-gray-400 text-center">
+                    ¿Ya tienes cuenta? 
+                    <a href="index.html" class="text-black dark:text-white font-semibold underline">Inicia sesión</a>
+                </p>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Theme Management
+        function toggleDarkMode() {
+            const html = document.documentElement;
+            const icon = document.getElementById('themeIcon');
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                icon.textContent = 'dark_mode';
+                localStorage.setItem('modaPeruTheme', 'light');
+            } else {
+                html.classList.add('dark');
+                icon.textContent = 'light_mode';
+                localStorage.setItem('modaPeruTheme', 'dark');
+            }
+        }
+
+        function loadTheme() {
+            const theme = localStorage.getItem('modaPeruTheme') || 'light';
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+                const icon = document.getElementById('themeIcon');
+                if (icon) icon.textContent = 'light_mode';
+            }
+        }
+
+        // User Management
+        function getCurrentUser() {
+            return JSON.parse(localStorage.getItem('modaPeruCurrentUser') || 'null');
+        }
+
+        function setCurrentUser(user) {
+            localStorage.setItem('modaPeruCurrentUser', JSON.stringify(user));
+        }
+
+        function showToast(message, type = 'success') {
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                container.className = 'toast-container';
+                document.body.appendChild(container);
+            }
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+            requestAnimationFrame(() => toast.classList.add('show'));
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // Auth Handlers
+        function handleRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('registerName').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const confirm = document.getElementById('registerConfirm').value;
+
+            if (password !== confirm) {
+                showToast('Las contraseñas no coinciden', 'error');
+                return;
+            }
+
+            const users = JSON.parse(localStorage.getItem('modaPeruUsers') || '[]');
+            if (users.find(u => u.email === email)) {
+                showToast('Ya existe una cuenta con este correo', 'error');
+                return;
+            }
+
+            const newUser = { name, email, password };
+            users.push(newUser);
+            localStorage.setItem('modaPeruUsers', JSON.stringify(users));
+            setCurrentUser({ name, email });
+            showToast('Cuenta creada exitosamente', 'success');
+            
+            // Redirect to home after successful registration
+            setTimeout(() => {
+                window.location.href = 'home.html';
+            }, 1500);
+        }
+
+        // Initialize
+        window.onload = function() {
+            loadTheme();
+        };
+    </script>
+</body>
+</html>

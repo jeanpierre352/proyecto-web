@@ -3,27 +3,20 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MODA PERÚ - Mi Perfil</title>
+    <title>MODA PERÚ - Términos y Condiciones</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇵🇪</text></svg>">
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="styles.css">
     <script id="tailwind-config">
         tailwind.config = {
             darkMode: "class",
-            theme: {
-                extend: {
-                    fontFamily: {
-                        "label-caps": ["Calibri", "sans-serif"],
-                        "headline-lg": ["Calibri", "sans-serif"],
-                        "body-md": ["Calibri", "sans-serif"]
-                    }
-                }
-            }
+            theme: { extend: { fontFamily: { "label-caps": ["Calibri", "sans-serif"], "headline-lg": ["Calibri", "sans-serif"], "body-md": ["Calibri", "sans-serif"] } } }
         }
     </script>
 </head>
- <body class="font-body-md text-gray-900 dark:text-gray-100 bg-white dark:bg-black transition-colors duration-300">
+<body class="font-body-md text-gray-900 dark:text-gray-100 bg-white dark:bg-black transition-colors duration-300">
 
     <!-- Modal -->
     <div id="infoModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
@@ -36,11 +29,10 @@
         </div>
     </div>
 
-    <!-- Header -->
     <header class="bg-white dark:bg-black border-b border-gray-200 dark:border-gray-800 fixed top-0 z-50 w-full">
         <nav class="flex justify-between items-center h-20 px-8 max-w-7xl mx-auto w-full">
             <div class="flex items-center gap-12">
-                <a href="home.html" class="text-2xl font-bold tracking-tighter text-black dark:text-white">MODA PERÚ</a>
+                <a href="home.html" class="text-2xl font-bold tracking-tighter text-black dark:text-white hover:opacity-70 transition-all">MODA PERÚ</a>
                 <div class="hidden md:flex gap-8 items-center">
                     <a class="nav-link text-gray-600 dark:text-gray-400" href="home.html">Colección</a>
                     <a class="nav-link text-gray-600 dark:text-gray-400" href="novedades.html">Novedades</a>
@@ -50,108 +42,51 @@
             </div>
             <div class="flex items-center gap-6">
                 <div id="userMenu" class="hidden flex items-center gap-4">
-                    <span id="userEmail" class="text-xs text-gray-500 dark:text-gray-400"></span>
+                    <a href="profile.html" id="userEmail" class="text-xs text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white"></a>
                     <button onclick="logout()" class="text-xs text-gray-400 dark:text-gray-500 hover:text-black dark:hover:text-white">Cerrar</button>
                 </div>
                 <button id="loginBtn" class="icon-btn dark:text-white" onclick="goToLogin()">
-                    <span class="material-symbols-outlined" data-icon="person">person</span>
+                    <span class="material-symbols-outlined">person</span>
                 </button>
                 <button class="icon-btn relative dark:text-white" onclick="goToCart()">
-                    <span class="material-symbols-outlined" data-icon="shopping_bag">shopping_bag</span>
+                    <span class="material-symbols-outlined">shopping_bag</span>
                     <span id="cartBadge" class="absolute -top-1 -right-1 bg-black dark:bg-white text-white dark:text-black text-[10px] w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
                 </button>
                 <button class="icon-btn dark:text-white" onclick="toggleDarkMode()">
-                    <span id="themeIcon" class="material-symbols-outlined" data-icon="dark_mode">dark_mode</span>
+                    <span id="themeIcon" class="material-symbols-outlined">dark_mode</span>
                 </button>
             </div>
         </nav>
     </header>
 
-    <!-- Main Content -->
-    <main class="pt-32 pb-20 max-w-7xl mx-auto px-8">
-        <div class="max-w-2xl mx-auto">
-            <h1 class="headline-lg text-black dark:text-white mb-8">Mi Perfil</h1>
-
-            <!-- User Info Card -->
-            <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-8 mb-8">
-                <div class="flex items-center gap-6 mb-6">
-                    <div class="w-20 h-20 bg-black dark:bg-white rounded-full flex items-center justify-center">
-                        <span class="material-symbols-outlined text-white dark:text-black text-3xl">person</span>
-                    </div>
-                    <div>
-                        <h2 id="profileName" class="text-xl font-semibold text-black dark:text-white">Usuario</h2>
-                        <p id="profileEmail" class="text-sm text-gray-500 dark:text-gray-400">email@ejemplo.com</p>
-                    </div>
-                </div>
-
-                <div class="border-t border-gray-200 dark:border-gray-700 pt-6">
-                    <h3 class="label-caps text-gray-500 dark:text-gray-400 uppercase mb-4">Información Personal</h3>
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm text-gray-600 dark:text-gray-400 mb-1">Nombre completo</label>
-                            <p id="displayName" class="text-black dark:text-white">-</p>
-                        </div>
-                        <div>
-                            <label class="block text-sm text-gray-600 dark:text-gray-400 mb-1">Correo electrónico</label>
-                            <p id="displayEmail" class="text-black dark:text-white">-</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Quick Actions -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-                <button onclick="goToCart()" class="p-6 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors text-left">
-                    <div class="flex items-center gap-4">
-                        <span class="material-symbols-outlined text-gray-600 dark:text-gray-400">shopping_bag</span>
-                        <div>
-                            <h3 class="font-semibold text-black dark:text-white">Mis Pedidos</h3>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">Ver historial de compras</p>
-                        </div>
-                    </div>
-                </button>
-                <button class="p-6 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors text-left">
-                    <div class="flex items-center gap-4">
-                        <span class="material-symbols-outlined text-gray-600 dark:text-gray-400">favorite</span>
-                        <div>
-                            <h3 class="font-semibold text-black dark:text-white">Lista de Deseos</h3>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">Productos guardados</p>
-                        </div>
-                    </div>
-                </button>
-                <button class="p-6 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors text-left">
-                    <div class="flex items-center gap-4">
-                        <span class="material-symbols-outlined text-gray-600 dark:text-gray-400">location_on</span>
-                        <div>
-                            <h3 class="font-semibold text-black dark:text-white">Direcciones</h3>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">Gestionar envíos</p>
-                        </div>
-                    </div>
-                </button>
-                <button class="p-6 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors text-left">
-                    <div class="flex items-center gap-4">
-                        <span class="material-symbols-outlined text-gray-600 dark:text-gray-400">settings</span>
-                        <div>
-                            <h3 class="font-semibold text-black dark:text-white">Configuración</h3>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">Preferencias de cuenta</p>
-                        </div>
-                    </div>
-                </button>
-            </div>
-
-            <!-- Current Cart -->
-            <div class="bg-gray-50 dark:bg-gray-900 rounded-lg p-6">
-                <h2 class="headline-lg text-black dark:text-white mb-4">Tu Carrito Actual</h2>
-                <div id="cartSummary">
-                    <p class="text-gray-500 dark:text-gray-400">Cargando...</p>
-                </div>
-            </div>
+    <main class="pt-28 pb-20 max-w-3xl mx-auto px-8">
+        <h1 class="headline-lg text-black dark:text-white mb-8">Términos y Condiciones</h1>
+        
+        <div class="space-y-6 text-gray-700 dark:text-gray-300">
+            <p>Última actualización: Abril 2024</p>
+            
+            <h2 class="text-lg font-semibold text-black dark:text-white mt-6">1. General</h2>
+            <p>MODA PERÚ es una tienda online de moda que opera desde Lima, Perú. Al usar nuestro sitio, aceptas estos términos.</p>
+            
+            <h2 class="text-lg font-semibold text-black dark:text-white mt-6">2. Precios</h2>
+            <p>Todos los precios incluyen IGV (18%). Nos reservamos el derecho de modificar precios sin previo aviso.</p>
+            
+            <h2 class="text-lg font-semibold text-black dark:text-white mt-6">3. Stock</h2>
+            <p>Los productos están sujetos a disponibilidad. Si un producto no está disponible, te contactaremos para un reembolso.</p>
+            
+            <h2 class="text-lg font-semibold text-black dark:text-white mt-6">4. Envíos</h2>
+            <p>• Lima: 24-48 horas<br/>• Provincias: 3-5 días<br/>• Gratis en pedidos mayores a S/ 500</p>
+            
+            <h2 class="text-lg font-semibold text-black dark:text-white mt-6">5. Devoluciones</h2>
+            <p>Tienes 30 días para solicitar un cambio. El producto debe estar sin usar y con etiquetas originales.</p>
+            
+            <h2 class="text-lg font-semibold text-black dark:text-white mt-6">6. Garantía</h2>
+            <p>Todos nuestros productos tienen garantía de calidad por 6 meses ante defectos de fábrica.</p>
         </div>
     </main>
 
-    <!-- Footer -->
     <footer class="bg-white dark:bg-black border-t border-gray-200 dark:border-gray-800 w-full mt-20">
-        <div class="flex flex-col md:flex-row justify-between items-center py-12 px-8 max-w-7xl mx-auto gap-6">
+        <div class="flex flex-col md:flex-row justify-between items-center py-12 px-8 max-w-7xl mx-auto w-full gap-6">
             <div class="text-lg font-black text-black dark:text-white uppercase">MODA PERÚ</div>
             <div class="flex flex-wrap justify-center gap-6">
                 <a class="footer-link text-gray-600 dark:text-gray-400 cursor-pointer" onclick="showModal('sostenibilidad')">Sostenibilidad</a>
@@ -160,11 +95,10 @@
                 <a class="footer-link text-gray-600 dark:text-gray-400 cursor-pointer" onclick="showModal('devoluciones')">Devoluciones</a>
                 <a class="footer-link text-gray-600 dark:text-gray-400 cursor-pointer" onclick="showModal('tallas')">Guía de Tallas</a>
             </div>
-            <div class="text-[10px] tracking-widest uppercase text-gray-500 dark:text-gray-500">© 2024 MODA PERÚ. LIMA, PERÚ.</div>
+            <div class="text-[10px] tracking-widest uppercase text-gray-500">© 2024 MODA PERÚ. LIMA, PERÚ.</div>
         </div>
     </footer>
 
-    <!-- JavaScript -->
     <script>
         // Theme Management
         function toggleDarkMode() {
@@ -206,29 +140,20 @@
             const user = getCurrentUser();
             const userMenu = document.getElementById('userMenu');
             const loginBtn = document.getElementById('loginBtn');
+            const userEmail = document.getElementById('userEmail');
 
             if (user) {
                 userMenu.classList.remove('hidden');
                 loginBtn.classList.add('hidden');
-                document.getElementById('userEmail').textContent = user.name || user.email;
-                document.getElementById('profileName').textContent = user.name || 'Usuario';
-                document.getElementById('profileEmail').textContent = user.email || '';
-                document.getElementById('displayName').textContent = user.name || 'No especificado';
-                document.getElementById('displayEmail').textContent = user.email || 'No especificado';
+                if (userEmail) userEmail.textContent = user.name || user.email;
             } else {
                 userMenu.classList.add('hidden');
                 loginBtn.classList.remove('hidden');
-                window.location.href = 'index.html';
             }
         }
-
-        // Cart Management
-        function getCartItems() {
-            return JSON.parse(localStorage.getItem('modaPeruCart') || '[]');
-        }
-
+        
         function updateCartBadge() {
-            const cart = getCartItems();
+            const cart = JSON.parse(localStorage.getItem('modaPeruCart') || '[]');
             const badge = document.getElementById('cartBadge');
             if (badge) {
                 if (cart.length > 0) {
@@ -240,35 +165,9 @@
             }
         }
 
-        function updateCartSummary() {
-            const cart = getCartItems();
-            const container = document.getElementById('cartSummary');
-            if (cart.length === 0) {
-                container.innerHTML = '<p class="text-gray-500 dark:text-gray-400">Tu carrito está vacío</p>';
-                return;
-            }
-            const total = cart.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
-            container.innerHTML = `
-                <div class="space-y-3">
-                    ${cart.map((item, index) => `
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <p class="font-medium text-black dark:text-white">${item.name}</p>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">Talla: ${item.size} • Cantidad: ${item.quantity || 1}</p>
-                            </div>
-                            <p class="font-semibold text-black dark:text-white">S/ ${(item.price * (item.quantity || 1)).toLocaleString()}</p>
-                        </div>
-                    `).join('')}
-                    <div class="border-t border-gray-200 dark:border-gray-700 pt-3 flex justify-between items-center">
-                        <span class="font-semibold text-black dark:text-white">Total</span>
-                        <span class="font-bold text-lg text-black dark:text-white">S/ ${total.toLocaleString()}</span>
-                    </div>
-                    <button onclick="goToCart()" class="btn-primary w-full mt-4">Ver Carrito</button>
-                </div>
-            `;
-        }
-
+        // Cart
         function goToCart() { window.location.href = 'cart.html'; }
+
         function goToLogin() {
             const user = getCurrentUser();
             window.location.href = user ? 'profile.html' : 'index.html';
@@ -361,24 +260,17 @@
         };
 
         function showModal(page) {
-            const modalDataPage = modalData[page];
-            if (modalDataPage) {
-                document.getElementById('modalTitle').textContent = modalDataPage.title;
-                document.getElementById('modalContent').innerHTML = modalDataPage.content;
-                document.getElementById('infoModal').classList.remove('hidden');
-            }
+            document.getElementById('modalTitle').textContent = modalData[page].title;
+            document.getElementById('modalContent').innerHTML = modalData[page].content;
+            document.getElementById('infoModal').classList.remove('hidden');
         }
 
-        function closeModal() {
-            document.getElementById('infoModal').classList.add('hidden');
-        }
+        function closeModal() { document.getElementById('infoModal').classList.add('hidden'); }
 
-        // Initialize
         window.onload = function() {
             loadTheme();
             updateUserMenu();
             updateCartBadge();
-            updateCartSummary();
         };
     </script>
 </body>
