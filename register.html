@@ -29,10 +29,23 @@
         <nav class="flex justify-between items-center h-20 px-8 max-w-7xl mx-auto w-full">
             <div class="flex items-center gap-12">
                 <a href="home.html" class="text-2xl font-bold tracking-tighter text-black dark:text-white">MODA PERÚ</a>
+                <div class="hidden md:flex gap-8 items-center">
+                    <a class="nav-link text-gray-600 dark:text-gray-400" href="home.html">Colección</a>
+                    <a class="nav-link text-gray-600 dark:text-gray-400" href="novedades.html">Novedades</a>
+                    <a class="nav-link text-gray-600 dark:text-gray-400" href="hombre.html">Hombre</a>
+                    <a class="nav-link text-gray-600 dark:text-gray-400" href="mujer.html">Mujer</a>
+                </div>
             </div>
             <div class="flex items-center gap-6">
-                <button id="loginBtn" class="icon-btn dark:text-white" onclick="window.location.href='index.html'">
+                <div id="userMenu" class="hidden flex items-center gap-4">
+                    <a id="userEmail" href="profile.html" class="text-xs text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white"></a>
+                    <button onclick="logout()" class="text-xs text-gray-400 dark:text-gray-500 hover:text-black dark:hover:text-white">Cerrar</button>
+                </div>
+                <button id="loginBtn" class="icon-btn dark:text-white" onclick="goToLogin()">
                     <span class="material-symbols-outlined" data-icon="person">person</span>
+                </button>
+                <button class="icon-btn relative dark:text-white" onclick="window.location.href='cart.html'">
+                    <span class="material-symbols-outlined" data-icon="shopping_bag">shopping_bag</span>
                 </button>
                 <button class="icon-btn dark:text-white" onclick="toggleDarkMode()">
                     <span id="themeIcon" class="material-symbols-outlined" data-icon="dark_mode">dark_mode</span>
@@ -44,7 +57,7 @@
     <!-- Main Content -->
     <main class="pt-32 pb-20 max-w-7xl mx-auto px-8">
         <div class="max-w-4xl mx-auto">
-            <div class="bg-gray-50 dark:bg-gray-900 p-8 rounded-lg">
+            <div class="bg-white dark:bg-black p-8 rounded-lg border border-gray-200 dark:border-gray-800">
                 <h1 class="headline-lg text-black dark:text-white mb-8 text-center">Crear Cuenta</h1>
                 
                 <form onsubmit="handleRegister(event)">
@@ -69,11 +82,37 @@
                 
                 <p class="mt-6 text-sm text-gray-500 dark:text-gray-400 text-center">
                     ¿Ya tienes cuenta? 
-                    <a href="index.html" class="text-black dark:text-white font-semibold underline">Inicia sesión</a>
+                    <a href="index.html" class="text-black dark:text-white font-semibold underline hover:opacity-80">Inicia sesión</a>
                 </p>
             </div>
         </div>
     </main>
+
+    <!-- Modal -->
+    <div id="infoModal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-900 max-w-lg w-full p-8 rounded-lg">
+            <div class="flex justify-between items-center mb-4">
+                <h2 id="modalTitle" class="text-xl font-bold text-black dark:text-white">Título</h2>
+                <button onclick="closeModal()" class="text-2xl dark:text-white">✕</button>
+            </div>
+            <div id="modalContent" class="text-gray-700 dark:text-gray-300"></div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white dark:bg-black border-t border-gray-200 dark:border-gray-800 w-full mt-20">
+        <div class="flex flex-col md:flex-row justify-between items-center py-12 px-8 max-w-7xl mx-auto gap-6">
+            <div class="text-lg font-black text-black dark:text-white uppercase">MODA PERÚ</div>
+            <div class="flex flex-wrap justify-center gap-6">
+                <a class="footer-link text-gray-600 dark:text-gray-400 cursor-pointer" onclick="showModal('sostenibilidad')">Sostenibilidad</a>
+                <a class="footer-link text-gray-600 dark:text-gray-400 cursor-pointer" onclick="showModal('terminos')">Términos</a>
+                <a class="footer-link text-gray-600 dark:text-gray-400 cursor-pointer" onclick="showModal('envios')">Envíos</a>
+                <a class="footer-link text-gray-600 dark:text-gray-400 cursor-pointer" onclick="showModal('devoluciones')">Devoluciones</a>
+                <a class="footer-link text-gray-600 dark:text-gray-400 cursor-pointer" onclick="showModal('tallas')">Guía de Tallas</a>
+            </div>
+            <div class="text-[10px] tracking-widest uppercase text-gray-500 dark:text-gray-500">© 2024 MODA PERÚ. LIMA, PERÚ.</div>
+        </div>
+    </footer>
 
     <script>
         // Theme Management
@@ -109,6 +148,45 @@
             localStorage.setItem('modaPeruCurrentUser', JSON.stringify(user));
         }
 
+        function updateUserMenu() {
+            const user = getCurrentUser();
+            const userMenu = document.getElementById('userMenu');
+            const loginBtn = document.getElementById('loginBtn');
+            const userEmail = document.getElementById('userEmail');
+            if (user) {
+                userMenu.classList.remove('hidden');
+                loginBtn.classList.add('hidden');
+                if (userEmail) userEmail.textContent = user.name || user.email;
+            } else {
+                userMenu.classList.add('hidden');
+                loginBtn.classList.remove('hidden');
+            }
+        }
+
+        function goToLogin() {
+            const user = getCurrentUser();
+            window.location.href = user ? 'profile.html' : 'index.html';
+        }
+
+        function logout() {
+            localStorage.removeItem('modaPeruCurrentUser');
+            updateUserMenu();
+            window.location.href = 'index.html';
+        }
+
+        function updateCartBadge() {
+            const cart = JSON.parse(localStorage.getItem('modaPeruCart') || '[]');
+            const badge = document.getElementById('cartBadge');
+            if (badge) {
+                if (cart.length > 0) {
+                    badge.textContent = cart.length;
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
+            }
+        }
+
         function showToast(message, type = 'success') {
             let container = document.getElementById('toast-container');
             if (!container) {
@@ -126,6 +204,109 @@
                 toast.classList.remove('show');
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
+        }
+
+        // Modal Data
+        const modalData = {
+            sostenibilidad: {
+                title: 'Sostenibilidad',
+                content: `<p>MODA PERÚ está comprometido con la sostenibilidad y el comercio ético.</p>
+                <h3 class="font-bold text-black dark:text-white mt-4">Nuestra Compromisión</h3>
+                <ul class="list-disc pl-5 space-y-2 mt-2">
+                    <li>Fibras 100% naturales y renovables</li>
+                    <li>Comunidades artesanas del sur del Perú</li>
+                    <li>Proceso de producción sostenible</li>
+                    <li>Embalajes reciclados</li>
+                    <li>Reducción de huella de carbono</li>
+                </ul>
+                <p class="mt-4">Cada compra apoya a más de 500 familias artesanas.</p>`
+            },
+            terminos: {
+                title: 'Términos y Condiciones',
+                content: `<h3 class="font-bold text-black dark:text-white">1. General</h3>
+                <p class="mt-2">MODA PERÚ es una tienda online de moda que opera desde Lima, Perú.</p>
+                <h3 class="font-bold text-black dark:text-white mt-4">2. Precios</h3>
+                <p class="mt-2">Todos los precios incluyen IGV (18%). Nos reservamos el derecho de modificar precios sin previo aviso.</p>
+                <h3 class="font-bold text-black dark:text-white mt-4">3. Stock</h3>
+                <p class="mt-2">Los productos están sujetos a disponibilidad. Si un producto no está disponible, te contactaremos para un reembolso.</p>
+                <h3 class="font-bold text-black dark:text-white mt-4">4. Garantía</h3>
+                <p class="mt-2">Todos nuestros productos tienen garantía de calidad por 6 meses.</p>`
+            },
+            envios: {
+                title: 'Envíos',
+                content: `<h3 class="font-bold text-black dark:text-white">Métodos de Envío</h3>
+                <ul class="list-disc pl-5 space-y-2 mt-2">
+                    <li><strong>Lima:</strong> 24-48 horas - S/ 15</li>
+                    <li><strong>Provincias:</strong> 3-5 días - S/ 25</li>
+                    <li><strong>Gratis:</strong> Pedidos mayores a S/ 500</li>
+                </ul>
+                <h3 class="font-bold text-black dark:text-white mt-4">Información Importante</h3>
+                <p class="mt-2">Los envíos se procesan de lunes a viernes. Pedidos viernes después de 2pm se envían lunes.</p>`
+            },
+            devoluciones: {
+                title: 'Devoluciones',
+                content: `<h3 class="font-bold text-black dark:text-white">Política de Devoluciones</h3>
+                <ul class="list-disc pl-5 space-y-2 mt-2">
+                    <li>Tienes 30 días para solicitar un cambio</li>
+                    <li>El producto debe estar sin usar</li>
+                    <li>Debe tener las etiquetas originales</li>
+                    <li>El cliente paga el envío de retorno</li>
+                </ul>
+                <h3 class="font-bold text-black dark:text-white mt-4">Proceso</h3>
+                <p class="mt-2">Contáctanos por WhatsApp o email para iniciar el proceso.</p>`
+            },
+            tallas: {
+                title: 'Guía de Tallas',
+                content: `<h3 class="font-bold text-black dark:text-white">Tabla de Tallas</h3>
+                <table class="w-full mt-4 border-collapse">
+                    <thead>
+                        <tr class="border-b border-gray-300 dark:border-gray-700">
+                            <th class="text-left py-2 text-black dark:text-white">Talla</th>
+                            <th class="text-left py-2 text-black dark:text-white">Medida</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b border-gray-200 dark:border-gray-800">
+                            <td class="py-2 text-gray-700 dark:text-gray-300">XS</td>
+                            <td class="py-2 text-gray-700 dark:text-gray-300">Pecho: 80-86cm</td>
+                        </tr>
+                        <tr class="border-b border-gray-200 dark:border-gray-800">
+                            <td class="py-2 text-gray-700 dark:text-gray-300">S</td>
+                            <td class="py-2 text-gray-700 dark:text-gray-300">Pecho: 86-92cm</td>
+                        </tr>
+                        <tr class="border-b border-gray-200 dark:border-gray-800">
+                            <td class="py-2 text-gray-700 dark:text-gray-300">M</td>
+                            <td class="py-2 text-gray-700 dark:text-gray-300">Pecho: 92-98cm</td>
+                        </tr>
+                        <tr class="border-b border-gray-200 dark:border-gray-800">
+                            <td class="py-2 text-gray-700 dark:text-gray-300">L</td>
+                            <td class="py-2 text-gray-700 dark:text-gray-300">Pecho: 98-104cm</td>
+                        </tr>
+                        <tr class="border-b border-gray-200 dark:border-gray-800">
+                            <td class="py-2 text-gray-700 dark:text-gray-300">XL</td>
+                            <td class="py-2 text-gray-700 dark:text-gray-300">Pecho: 104-110cm</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="mt-4 text-gray-600 dark:text-gray-400">¿Necesitas ayuda? Contáctanos por WhatsApp.</p>`
+            }
+        };
+
+        function showModal(page) {
+            const data = modalData[page];
+            if (data) {
+                const modalTitle = document.getElementById('modalTitle');
+                const modalContent = document.getElementById('modalContent');
+                if (modalTitle) modalTitle.textContent = data.title;
+                if (modalContent) modalContent.innerHTML = data.content;
+                const modal = document.getElementById('infoModal');
+                if (modal) modal.classList.remove('hidden');
+            }
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('infoModal');
+            if (modal) modal.classList.add('hidden');
         }
 
         // Auth Handlers
@@ -162,6 +343,12 @@
         // Initialize
         window.onload = function() {
             loadTheme();
+            updateUserMenu();
+            updateCartBadge();
+            const user = getCurrentUser();
+            if (user) {
+                window.location.href = 'home.html';
+            }
         };
     </script>
 </body>

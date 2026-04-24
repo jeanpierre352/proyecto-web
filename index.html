@@ -207,6 +207,10 @@
             localStorage.setItem('modaPeruCurrentUser', JSON.stringify(user));
         }
 
+        function getCartCount() {
+            return JSON.parse(localStorage.getItem('modaPeruCart') || '[]').length;
+        }
+
         function logout() {
             localStorage.removeItem('modaPeruCurrentUser');
             updateUserMenu();
@@ -226,6 +230,8 @@
                 userMenu.classList.add('hidden');
                 loginBtn.classList.remove('hidden');
             }
+        }
+
         function updateCartBadge() {
             const count = getCartCount();
             const badge = document.getElementById('cartBadge');
@@ -440,7 +446,6 @@
                 showLoggedIn();
             }
         };
-        
     </script>
 </body>
 </html>

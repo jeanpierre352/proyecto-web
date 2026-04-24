@@ -213,12 +213,17 @@
             updateCartBadge();
         }
 
+        // User Management
+        function getCurrentUser() {
+            return JSON.parse(localStorage.getItem('modaPeruCurrentUser') || 'null');
+        }
+
         function updateUserMenu() {
             const user = getCurrentUser();
             const userMenu = document.getElementById('userMenu');
             const loginBtn = document.getElementById('loginBtn');
             const userEmail = document.getElementById('userEmail');
-            
+
             if (user) {
                 userMenu.classList.remove('hidden');
                 loginBtn.classList.add('hidden');
@@ -229,8 +234,13 @@
             }
         }
 
+        // Cart Management
+        function getCartItems() {
+            return JSON.parse(localStorage.getItem('modaPeruCart') || '[]');
+        }
+
         function updateCartBadge() {
-            const cart = JSON.parse(localStorage.getItem('modaPeruCart') || '[]');
+            const cart = getCartItems();
             const badge = document.getElementById('cartBadge');
             if (badge) {
                 if (cart.length > 0) {
@@ -342,19 +352,21 @@
                 setTimeout(() => window.location.href = 'index.html', 1500);
                 return;
             }
-            
-            let cartItems = JSON.parse(localStorage.getItem('modaPeruCart') || '[]');
+
+            let cartItems = getCartItems();
+            const selectedSize = document.querySelector('.size-button.selected');
+            const size = selectedSize ? selectedSize.textContent : 'Única';
+
             cartItems.push({
                 id: 2,
                 name: 'Bufanda Alpaca Infinity',
                 price: 220,
                 image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDnxz7Qol2PMB1g4h6z8aAJHBvFalfz6uaZwnKA3r8e_1ZIEdJ3dTNxJWCaZ3rVDeK7vbfBHCuWx7nBL-q3KkKBG5RHzJ0w9rZY0s0GzlGdCBRi03W7yc_ohK84NNNjJy3Ci5_mD2YF0NX4zV_NsdBCc3oGWQuez_Pl7Gt5a3njvsTQaso33_SAwbOl2yjDsPIT5D9l9hkDmx38N5bab2ZKQjJHE1SdTjYfcvrOnsDpxIW-qlMatszUhP0N_bk76iJ_wrozMT4Jkw',
-                size: 'Única',
+                size: size,
                 quantity: 1
             });
-            
+
             localStorage.setItem('modaPeruCart', JSON.stringify(cartItems));
-            localStorage.setItem('modaPeruCartCount', cartItems.length);
             showToast('Producto añadido al carrito');
             updateCartBadge();
         }
@@ -371,9 +383,12 @@
 
         function selectSize(button) {
             document.querySelectorAll('.size-button').forEach(btn => {
-                btn.classList.remove('selected');
+                btn.classList.remove('selected', 'bg-black', 'text-white', 'border-black');
+                btn.classList.add('border-neutral-200', 'dark:border-neutral-700');
             });
             button.classList.add('selected');
+            button.classList.remove('border-neutral-200', 'dark:border-neutral-700');
+            button.classList.add('bg-black', 'text-white', 'border-black');
         }
 
         function showToast(message, type = 'success') {

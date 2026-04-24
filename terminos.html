@@ -260,12 +260,44 @@
         };
 
         function showModal(page) {
-            document.getElementById('modalTitle').textContent = modalData[page].title;
-            document.getElementById('modalContent').innerHTML = modalData[page].content;
-            document.getElementById('infoModal').classList.remove('hidden');
+            const data = modalData[page];
+            if (data) {
+                document.getElementById('modalTitle').textContent = data.title;
+                document.getElementById('modalContent').innerHTML = data.content;
+                document.getElementById('infoModal').classList.remove('hidden');
+            }
         }
 
         function closeModal() { document.getElementById('infoModal').classList.add('hidden'); }
+
+        // Toast notifications
+        function showToast(message, type = 'success') {
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                container.className = 'toast-container';
+                document.body.appendChild(container);
+            }
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+            requestAnimationFrame(() => toast.classList.add('show'));
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function showModal(page) {
+            const data = modalData[page];
+            if (data) {
+                document.getElementById('modalTitle').textContent = data.title;
+                document.getElementById('modalContent').innerHTML = data.content;
+                document.getElementById('infoModal').classList.remove('hidden');
+            }
+        }
 
         window.onload = function() {
             loadTheme();
