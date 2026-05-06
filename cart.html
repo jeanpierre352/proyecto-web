@@ -130,12 +130,8 @@
         </div>
     </footer>
 
-    <script>
-        const products = [
-            { id: 1, name: 'Abrigo de Alpaca Minimalista', price: 1450, image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD1debAKjt8bY8QJSHbssGk9uZaU-dWVMOiJ_WiTBndJDmkV-SukSCkhfSfBkxkdxaRYtEbbv01pNO28G4KKTe8dvtYm7dgyzS_hYap3duxTHHjGrf5i6G-fg0mw6P6RQjdVqO-rleLZWlv9KzCWMpYkJjWEqHSVXOmwQXbafVLFuXheCfdbtxFabySM-5E3rLvCyTkNEEyknxFAFQODRxkN6pVaxADAGlaAGsV0-MH9AudF9XJTu8GPSGhV8Sa0NduoXxXSA4p5w', size: 'S' },
-            { id: 2, name: 'Tailored Pant Noir', price: 480, image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuAV-tU7iqO4LVXPauz3EVU0N-m8qEAknSeaVxqjzWjz1al9ecJahtFG0BrvMpzx0jbTd6hf07PsXmyAQ8XQ_k5xsbiVzvBaikZ-XzShbhAOQ5PpARlD8mPo2-vHV441AR1TlCykGg3trYLPC3HtgCBag4rNlSNYj8VR48mO4VHyMHfo349sf5r-kBANrJ2g15PM6bYjgAFfWaHL7u7cGZ3HMBt7_eQhsnZ-4fvVKL7EwnzTJlS8bVD09ySyQYiMMsZwPD7QYZgHag', size: 'M' }
-        ];
-
+    <script type="module">
+        import { supabase } from './supabase-config.js';
         function loadTheme() {
             const theme = localStorage.getItem('modaPeruTheme') || 'light';
             if (theme === 'dark') {
@@ -143,6 +139,7 @@
                 document.getElementById('themeIcon').textContent = 'light_mode';
             }
         }
+        window.loadTheme = loadTheme;
 
         function toggleDarkMode() {
             const html = document.documentElement;
@@ -157,60 +154,108 @@
                 localStorage.setItem('modaPeruTheme', 'dark');
             }
         }
+        window.toggleDarkMode = toggleDarkMode;
 
-        function getCurrentUser() {
-            return JSON.parse(localStorage.getItem('modaPeruCurrentUser') || 'null');
+        async function getCurrentUser() {
+            const { data: { user } } = await supabase.auth.getUser();
+            return user;
         }
+        window.getCurrentUser = getCurrentUser;
 
-        function logout() {
-            localStorage.removeItem('modaPeruCurrentUser');
+        async function logout() {
+            await supabase.auth.signOut();
             window.location.href = 'index.html';
         }
+        window.logout = logout;
 
-        function getCartItems() {
-            return JSON.parse(localStorage.getItem('modaPeruCart') || '[]');
+        async function updateUserMenu() {
+            const user = await getCurrentUser();
+            const userMenu = document.getElementById('userMenu');
+            const loginBtn = document.getElementById('loginBtn');
+            const userEmail = document.getElementById('userEmail');
+            if (user) {
+                userMenu.classList.remove('hidden');
+                loginBtn.classList.add('hidden');
+                if (userEmail) userEmail.textContent = user.email;
+            } else {
+                userMenu.classList.add('hidden');
+                loginBtn.classList.remove('hidden');
+            }
         }
+        window.updateUserMenu = updateUserMenu;
 
-        function updateCartBadge() {
-            const cart = getCartItems();
+        async function updateCartBadge() {
+            const user = await getCurrentUser();
+            if (!user) {
+                const badge = document.getElementById('cartBadge');
+                if (badge) badge.classList.add('hidden');
+                return;
+            }
+            
+            const { count, error } = await supabase.from('cart_items').select('*', { count: 'exact', head: true }).eq('user_id', user.id);
             const badge = document.getElementById('cartBadge');
             if (badge) {
-                if (cart.length > 0) {
-                    badge.textContent = cart.length;
+                if (!error && count > 0) {
+                    badge.textContent = count;
                     badge.classList.remove('hidden');
                 } else {
                     badge.classList.add('hidden');
                 }
             }
         }
+        window.updateCartBadge = updateCartBadge;
 
-        function removeFromCart(index) {
-            let items = getCartItems();
-            const itemName = items[index].name;
-            items.splice(index, 1);
-            localStorage.setItem('modaPeruCart', JSON.stringify(items));
-            localStorage.setItem('modaPeruCartCount', items.length);
-            updateCartBadge();
-            renderCart();
-            showToast('Producto eliminado del carrito', 'info');
+        async function removeFromCart(id) {
+            const { error } = await supabase.from('cart_items').delete().eq('id', id);
+            if (error) {
+                showToast('Error al eliminar producto: ' + error.message, 'error');
+            } else {
+                await updateCartBadge();
+                await renderCart();
+                showToast('Producto eliminado del carrito', 'info');
+            }
         }
+        window.removeFromCart = removeFromCart;
 
-        function updateQuantity(index, change) {
-            let items = getCartItems();
-            items[index].quantity = (items[index].quantity || 1) + change;
-            if (items[index].quantity < 1) items[index].quantity = 1;
-            localStorage.setItem('modaPeruCart', JSON.stringify(items));
-            updateCartBadge();
-            renderCart();
+        async function updateQuantity(id, currentQty, change) {
+            const newQty = Math.max(1, currentQty + change);
+            const { error } = await supabase.from('cart_items').update({ quantity: newQty }).eq('id', id);
+            if (error) {
+                showToast('Error al actualizar cantidad: ' + error.message, 'error');
+            } else {
+                await renderCart();
+                await updateCartBadge();
+            }
         }
+        window.updateQuantity = updateQuantity;
 
-        function renderCart() {
-            const items = getCartItems();
+        async function renderCart() {
+            const user = await getCurrentUser();
             const container = document.getElementById('cartItems');
             const emptyCart = document.getElementById('emptyCart');
             const cartContent = document.getElementById('cartContent');
+
+            if (!user) {
+                emptyCart.classList.remove('hidden');
+                cartContent.classList.add('hidden');
+                return;
+            }
+
+            const { data: items, error } = await supabase
+                .from('cart_items')
+                .select(`
+                    id,
+                    quantity,
+                    size,
+                    products (
+                        name,
+                        price,
+                        image_url
+                    )
+                `)
+                .eq('user_id', user.id);
             
-            if (items.length === 0) {
+            if (!items || items.length === 0) {
                 emptyCart.classList.remove('hidden');
                 cartContent.classList.add('hidden');
                 return;
@@ -221,87 +266,73 @@
             
             let subtotal = 0;
             container.innerHTML = items.map((item, index) => {
-                const itemTotal = item.price * (item.quantity || 1);
+                const itemTotal = item.products.price * item.quantity;
                 subtotal += itemTotal;
                 return `
                     <div class="flex gap-6 p-6 border border-neutral-200 dark:border-neutral-700">
                         <div class="w-32 h-40 bg-neutral-100 dark:bg-neutral-800 overflow-hidden">
-                            <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover"/>
+                            <img src="${item.products.image_url}" alt="${item.products.name}" class="w-full h-full object-cover"/>
                         </div>
                         <div class="flex-1 flex flex-col justify-between">
                             <div>
-                                <h3 class="body-md font-semibold">${item.name}</h3>
+                                <h3 class="body-md font-semibold">${item.products.name}</h3>
                                 <p class="text-sm text-neutral-400">Talla: ${item.size}</p>
                             </div>
                             <div class="flex justify-between items-center">
                                 <div class="flex items-center gap-4">
-                                    <button onclick="updateQuantity(${index}, -1)" class="size-button w-8 h-8 p-0 flex items-center justify-center">−</button>
-                                    <span class="w-8 text-center">${item.quantity || 1}</span>
-                                    <button onclick="updateQuantity(${index}, 1)" class="size-button w-8 h-8 p-0 flex items-center justify-center">+</button>
+                                    <button onclick="updateQuantity(${item.id}, ${item.quantity}, -1)" class="quantity-btn flex items-center justify-center">−</button>
+                                    <span class="w-8 text-center">${item.quantity}</span>
+                                    <button onclick="updateQuantity(${item.id}, ${item.quantity}, 1)" class="quantity-btn flex items-center justify-center">+</button>
                                 </div>
                                 <span class="font-semibold">S/ ${itemTotal.toLocaleString()}</span>
                             </div>
                         </div>
-                        <button onclick="removeFromCart(${index})" class="self-start">
+                        <button onclick="removeFromCart(${item.id})" class="self-start">
                             <span class="material-symbols-outlined text-neutral-400 hover:text-red-500">delete</span>
                         </button>
                     </div>
                 `;
             }).join('');
             
-            const tax = subtotal * 0.18;
-            const total = subtotal + tax;
-            document.getElementById('cartSubtotal').textContent = 'S/ ' + subtotal.toLocaleString();
-            document.getElementById('cartTax').textContent = 'S/ ' + tax.toLocaleString();
+            const total = subtotal;
+            const subtotalBase = total / 1.18;
+            const tax = total - subtotalBase;
+            document.getElementById('cartSubtotal').textContent = 'S/ ' + subtotalBase.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            document.getElementById('cartTax').textContent = 'S/ ' + tax.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
             document.getElementById('cartTotal').textContent = 'S/ ' + total.toLocaleString();
         }
 
-        function checkout() {
-            const user = getCurrentUser();
+        async function checkout() {
+            const user = await getCurrentUser();
             if (!user) {
                 showToast('Por favor inicia sesión para continuar con tu compra', 'error');
                 setTimeout(() => window.location.href = 'index.html', 1500);
                 return;
             }
             
-            const items = getCartItems();
-            if (items.length === 0) {
-                showToast('Tu carrito está vacío', 'info');
-                return;
-            }
-            
-            showToast('¡Pedido procesado con éxito!');
-            setTimeout(() => {
-                localStorage.removeItem('modaPeruCart');
-                localStorage.removeItem('modaPeruCartCount');
-                window.location.href = 'home.html';
-            }, 1500);
-        }
+            const { error: deleteError } = await supabase.from('cart_items').delete().eq('user_id', user.id);
 
+            if (deleteError) {
+                showToast('Error al procesar el pedido: ' + deleteError.message, 'error');
+            } else {
+                showToast('¡Pedido procesado con éxito!');
+                setTimeout(async () => {
+                    window.location.href = 'home.html';
+                }, 1500);
+            }
+        }
+        window.checkout = checkout;
 
         function goToCart() { window.location.href = 'cart.html'; }
+        window.goToCart = goToCart;
         function goToHome() { window.location.href = 'home.html'; }
+        window.goToHome = goToHome;
 
-        function updateUserMenu() {
-            const user = getCurrentUser();
-            const userMenu = document.getElementById('userMenu');
-            const loginBtn = document.getElementById('loginBtn');
-            const userEmail = document.getElementById('userEmail');
-
-            if (user) {
-                userMenu.classList.remove('hidden');
-                loginBtn.classList.add('hidden');
-                if (userEmail) userEmail.textContent = user.name || user.email;
-            } else {
-                userMenu.classList.add('hidden');
-                loginBtn.classList.remove('hidden');
-            }
-        }
-
-        function goToLogin() {
-            const user = getCurrentUser();
+        async function goToLogin() {
+            const user = await getCurrentUser();
             window.location.href = user ? 'profile.html' : 'index.html';
         }
+        window.goToLogin = goToLogin;
 
         // Toast notifications
         function showToast(message, type = 'success') {
@@ -322,6 +353,7 @@
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
         }
+        window.showToast = showToast;
 
         function showModal(page) {
             const data = modalData[page];
@@ -331,7 +363,12 @@
                 document.getElementById('infoModal').classList.remove('hidden');
             }
         }
+        window.showModal = showModal;
 
+        function closeModal() { document.getElementById('infoModal').classList.add('hidden'); }
+        window.closeModal = closeModal;
+
+        // Modal Data (same as other pages)
         const modalData = {
             sostenibilidad: {
                 title: 'Sostenibilidad',
@@ -417,23 +454,12 @@
             }
         };
 
-        function showModal(page) {
-            const data = modalData[page];
-            if (data) {
-                document.getElementById('modalTitle').textContent = data.title;
-                document.getElementById('modalContent').innerHTML = data.content;
-                document.getElementById('infoModal').classList.remove('hidden');
-            }
-        }
-
-        function closeModal() { document.getElementById('infoModal').classList.add('hidden'); }
-
-        window.onload = function() {
+        window.onload = async function() {
             loadTheme();
-            updateUserMenu();
-            updateCartBadge();
-            renderCart();
-        };
-    </script>
-</body>
+            await updateUserMenu();
+            await updateCartBadge();
+            await renderCart();
+         };
+     </script>
+ </body>
 </html>

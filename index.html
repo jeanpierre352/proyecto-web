@@ -70,12 +70,12 @@
     <!-- Main Content -->
     <main class="pt-32 pb-20 max-w-7xl mx-auto px-8">
         <div class="max-w-4xl mx-auto">
-            <div id="loginSection">
+            <div id="authContainer">
                 <h1 class="headline-lg text-black dark:text-white mb-8 text-center">Bienvenido a MODA PERÚ</h1>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
                     <!-- Login Form -->
-                    <div class="bg-gray-50 dark:bg-gray-900 p-8 rounded-lg">
+                    <div id="loginSection" class="bg-gray-50 dark:bg-gray-900 p-8 rounded-lg">
                         <h2 class="headline-md text-black dark:text-white mb-6">Iniciar Sesión</h2>
                         <form onsubmit="handleLogin(event)">
                             <div class="mb-6">
@@ -173,21 +173,24 @@
         </div>
     </footer>
 
-    <script>
+    <script type="module">
+        import { supabase } from './supabase-config.js';
+
         // Theme Management
         function toggleDarkMode() {
             const html = document.documentElement;
             const icon = document.getElementById('themeIcon');
             if (html.classList.contains('dark')) {
                 html.classList.remove('dark');
-                icon.textContent = 'dark_mode';
+                if (icon) icon.textContent = 'dark_mode';
                 localStorage.setItem('modaPeruTheme', 'light');
             } else {
                 html.classList.add('dark');
-                icon.textContent = 'light_mode';
+                if (icon) icon.textContent = 'light_mode';
                 localStorage.setItem('modaPeruTheme', 'dark');
             }
         }
+        window.toggleDarkMode = toggleDarkMode;
 
         function loadTheme() {
             const theme = localStorage.getItem('modaPeruTheme') || 'light';
@@ -197,46 +200,49 @@
                 if (icon) icon.textContent = 'light_mode';
             }
         }
+        window.loadTheme = loadTheme;
 
         // User Management
-        function getCurrentUser() {
-            return JSON.parse(localStorage.getItem('modaPeruCurrentUser') || 'null');
+        async function getCurrentUser() {
+            const { data: { user } } = await supabase.auth.getUser();
+            return user;
         }
+        window.getCurrentUser = getCurrentUser;
 
-        function setCurrentUser(user) {
-            localStorage.setItem('modaPeruCurrentUser', JSON.stringify(user));
-        }
-
-        function getCartCount() {
-            return JSON.parse(localStorage.getItem('modaPeruCart') || '[]').length;
-        }
-
-        function logout() {
-            localStorage.removeItem('modaPeruCurrentUser');
-            updateUserMenu();
+        async function logout() {
+            await supabase.auth.signOut();
             window.location.href = 'index.html';
         }
+        window.logout = logout;
 
-        function updateUserMenu() {
-            const user = getCurrentUser();
+        async function updateUserMenu() {
+            const user = await getCurrentUser();
             const userMenu = document.getElementById('userMenu');
             const loginBtn = document.getElementById('loginBtn');
             const userEmail = document.getElementById('userEmail');
             if (user) {
                 userMenu.classList.remove('hidden');
                 loginBtn.classList.add('hidden');
-                if (userEmail) userEmail.textContent = user.name || user.email;
+                if (userEmail) userEmail.textContent = user.email;
             } else {
                 userMenu.classList.add('hidden');
                 loginBtn.classList.remove('hidden');
             }
         }
+        window.updateUserMenu = updateUserMenu;
 
-        function updateCartBadge() {
-            const count = getCartCount();
+        async function updateCartBadge() {
+            const user = await getCurrentUser();
+            if (!user) return;
+
+            const { count, error } = await supabase
+                .from('cart_items')
+                .select('*', { count: 'exact', head: true })
+                .eq('user_id', user.id);
+
             const badge = document.getElementById('cartBadge');
             if (badge) {
-                if (count > 0) {
+                if (!error && count > 0) {
                     badge.textContent = count;
                     badge.classList.remove('hidden');
                 } else {
@@ -244,6 +250,7 @@
                 }
             }
         }
+        window.updateCartBadge = updateCartBadge;
 
         function showToast(message, type = 'success') {
             let container = document.getElementById('toast-container');
@@ -263,79 +270,85 @@
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
         }
+        window.showToast = showToast;
 
         // Auth Handlers
-        function handleLogin(e) {
+        async function handleLogin(e) {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value;
             const password = document.getElementById('loginPassword').value;
 
-            const users = JSON.parse(localStorage.getItem('modaPeruUsers') || '[]');
-            const user = users.find(u => u.email === email && u.password === password);
-
-            if (user) {
-                setCurrentUser({ name: user.name, email: user.email });
-                showLoggedIn();
-                showToast('Inicio de sesión exitoso', 'success');
+            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            if (error) {
+                showToast(error.message, 'error');
             } else {
-                showToast('Credenciales incorrectas', 'error');
+                showToast('Inicio de sesión exitoso', 'success');
+                await showLoggedIn();
             }
         }
+        window.handleLogin = handleLogin;
 
-        function handleRegister(e) {
+        async function handleRegister(e) {
             e.preventDefault();
             const name = document.getElementById('registerName').value;
             const email = document.getElementById('registerEmail').value;
             const password = document.getElementById('registerPassword').value;
             const confirm = document.getElementById('registerConfirm').value;
-
             if (password !== confirm) {
                 showToast('Las contraseñas no coinciden', 'error');
                 return;
             }
 
-            const users = JSON.parse(localStorage.getItem('modaPeruUsers') || '[]');
-            if (users.find(u => u.email === email)) {
-                showToast('Ya existe una cuenta con este correo', 'error');
+            const { data, error } = await supabase.auth.signUp({ 
+                email, 
+                password,
+                options: { data: { full_name: name } }
+            });
+
+            if (error) {
+                showToast(error.message, 'error');
                 return;
             }
 
-            const newUser = { name, email, password };
-            users.push(newUser);
-            localStorage.setItem('modaPeruUsers', JSON.stringify(users));
-            setCurrentUser({ name, email });
+            await supabase.from('profiles').insert([{ id: data.user.id, full_name: name }]);
             showToast('Cuenta creada exitosamente', 'success');
-            showLoggedIn();
+            await showLoggedIn();
         }
+        window.handleRegister = handleRegister;
 
-        function showLoggedIn() {
-            document.getElementById('loginSection').classList.add('hidden');
+        async function showLoggedIn() {
+            document.getElementById('authContainer').classList.add('hidden');
             document.getElementById('registerSection').classList.add('hidden');
             const successMessage = document.getElementById('successMessage');
             const welcomeEmail = document.getElementById('welcomeEmail');
-            const user = getCurrentUser();
+            const user = await getCurrentUser();
             if (user && welcomeEmail) {
                 welcomeEmail.textContent = 'Sesión iniciada como ' + user.email;
             }
             successMessage.classList.remove('hidden');
         }
+        window.showLoggedIn = showLoggedIn;
 
         function showRegister() {
             document.getElementById('loginSection').classList.add('hidden');
             document.getElementById('registerSection').classList.remove('hidden');
         }
+        window.showRegister = showRegister;
 
         function showLogin() {
             document.getElementById('registerSection').classList.add('hidden');
             document.getElementById('loginSection').classList.remove('hidden');
         }
+        window.showLogin = showLogin;
 
         // Navigation
         function goToCart() { window.location.href = 'cart.html'; }
-        function goToLogin() {
-            const user = getCurrentUser();
+        window.goToCart = goToCart;
+        async function goToLogin() {
+            const user = await getCurrentUser();
             window.location.href = user ? 'profile.html' : 'index.html';
         }
+        window.goToLogin = goToLogin;
 
         // Modal Data (same as other pages)
         const modalData = {
@@ -431,17 +444,19 @@
                 document.getElementById('infoModal').classList.remove('hidden');
             }
         }
+        window.showModal = showModal;
 
         function closeModal() {
             document.getElementById('infoModal').classList.add('hidden');
         }
+        window.closeModal = closeModal;
 
         // Initialize
-        window.onload = function() {
+        window.onload = async function() {
             loadTheme();
-            updateUserMenu();
-            updateCartBadge();
-            const user = getCurrentUser();
+            await updateUserMenu();
+            await updateCartBadge();
+            const user = await getCurrentUser();
             if (user) {
                 showLoggedIn();
             }

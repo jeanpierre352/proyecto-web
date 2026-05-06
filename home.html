@@ -178,12 +178,14 @@
                 <a class="footer-link cursor-pointer" onclick="showModal('terminos')">Términos</a>
                 <a class="footer-link cursor-pointer" onclick="showModal('envios')">Envíos</a>
                 <a class="footer-link cursor-pointer" onclick="showModal('devoluciones')">Devoluciones</a>
+                <a class="footer-link cursor-pointer" onclick="showModal('tallas')">Guía de Tallas</a>
             </div>
             <div class="text-[10px] tracking-widest uppercase text-gray-500">© 2024 MODA PERÚ. LIMA, PERÚ.</div>
         </div>
     </footer>
 
-    <script>
+    <script type="module">
+        import { supabase } from './supabase-config.js';
         // Theme Management
         function toggleDarkMode() {
             const html = document.documentElement;
@@ -194,6 +196,7 @@
                 localStorage.setItem('modaPeruTheme', 'light');
             } else {
                 html.classList.add('dark');
+                if (icon) icon.textContent = 'light_mode';
                 icon.textContent = 'light_mode';
                 localStorage.setItem('modaPeruTheme', 'dark');
             }
@@ -207,46 +210,60 @@
                 if (icon) icon.textContent = 'light_mode';
             }
         }
+        window.toggleDarkMode = toggleDarkMode;
+        window.loadTheme = loadTheme;
 
         // User & Cart
-        function getCartCount() {
-            return JSON.parse(localStorage.getItem('modaPeruCart') || '[]').length;
+        async function getCurrentUser() {
+            const { data: { user } } = await supabase.auth.getUser();
+            return user;
         }
+        window.getCurrentUser = getCurrentUser;
 
-        function getCurrentUser() {
-            return JSON.parse(localStorage.getItem('modaPeruCurrentUser') || 'null');
-        }
-
-        function goToLogin() {
-            const user = getCurrentUser();
+        async function goToLogin() {
+            const user = await getCurrentUser();
             window.location.href = user ? 'profile.html' : 'index.html';
         }
+        window.goToLogin = goToLogin;
 
         function goToCart() { window.location.href = 'cart.html'; }
+        window.goToCart = goToCart;
         function openSearch() { window.location.href = 'home.html'; }
-        function logout() {
-            localStorage.removeItem('modaPeruCurrentUser');
+        window.openSearch = openSearch;
+        async function logout() {
+            await supabase.auth.signOut();
             window.location.href = 'index.html';
         }
-        function updateUserMenu() {
-            const user = getCurrentUser();
+        window.logout = logout;
+
+        async function updateUserMenu() {
+            const user = await getCurrentUser();
             const userMenu = document.getElementById('userMenu');
             const loginBtn = document.getElementById('loginBtn');
             const userEmail = document.getElementById('userEmail');
             if (user) {
                 userMenu.classList.remove('hidden');
                 loginBtn.classList.add('hidden');
-                if (userEmail) userEmail.textContent = user.name || user.email;
+                if (userEmail) userEmail.textContent = user.email;
             } else {
                 userMenu.classList.add('hidden');
                 loginBtn.classList.remove('hidden');
             }
         }
-        function updateCartBadge() {
+        window.updateUserMenu = updateUserMenu;
+
+        async function updateCartBadge() {
+            const user = await getCurrentUser();
+            if (!user) {
+                const badge = document.getElementById('cartBadge');
+                if (badge) badge.classList.add('hidden');
+                return;
+            }
+            
+            const { count, error } = await supabase.from('cart_items').select('*', { count: 'exact', head: true }).eq('user_id', user.id);
             const badge = document.getElementById('cartBadge');
             if (badge) {
-                const count = getCartCount();
-                if (count > 0) {
+                if (!error && count > 0) {
                     badge.textContent = count;
                     badge.classList.remove('hidden');
                 } else {
@@ -254,11 +271,13 @@
                 }
             }
         }
+        window.updateCartBadge = updateCartBadge;
 
         function subscribe(e) {
             e.preventDefault();
             showToast('¡Gracias por suscribirte!', 'success');
         }
+        window.subscribe = subscribe;
 
         // Toast
         function showToast(message, type = 'success') {
@@ -279,6 +298,7 @@
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
         }
+        window.showToast = showToast;
 
         // Modal Data
         const modalData = {
@@ -374,15 +394,17 @@
                 document.getElementById('infoModal').classList.remove('hidden');
             }
         }
+        window.showModal = showModal;
 
         function closeModal() {
             document.getElementById('infoModal').classList.add('hidden');
         }
+        window.closeModal = closeModal;
 
-        window.onload = function() {
+        window.onload = async function() {
             loadTheme();
-            updateUserMenu();
-            updateCartBadge();
+            await updateUserMenu();
+            await updateCartBadge();
         };
     </script>
 </body>

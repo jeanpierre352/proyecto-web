@@ -165,7 +165,8 @@
     </footer>
 
     <!-- JavaScript -->
-    <script>
+    <script type="module">
+        import { supabase } from './supabase-config.js';
         // Theme Management
         function toggleDarkMode() {
             const html = document.documentElement;
@@ -176,6 +177,7 @@
                 localStorage.setItem('modaPeruTheme', 'light');
             } else {
                 html.classList.add('dark');
+                if (icon) icon.textContent = 'light_mode';
                 icon.textContent = 'light_mode';
                 localStorage.setItem('modaPeruTheme', 'dark');
             }
@@ -190,73 +192,112 @@
                 if (icon) icon.textContent = 'light_mode';
             }
         }
+        window.toggleDarkMode = toggleDarkMode;
+        window.loadTheme = loadTheme;
 
         // User Management
-        function getCurrentUser() {
-            return JSON.parse(localStorage.getItem('modaPeruCurrentUser') || 'null');
+        async function getCurrentUser() {
+            const { data: { user } } = await supabase.auth.getUser();
+            return user;
         }
+        window.getCurrentUser = getCurrentUser;
 
-        function logout() {
-            localStorage.removeItem('modaPeruCurrentUser');
-            updateUserMenu();
+        async function logout() {
+            await supabase.auth.signOut();
             window.location.href = 'index.html';
         }
+        window.logout = logout;
 
-        function updateUserMenu() {
-            const user = getCurrentUser();
+        async function updateUserMenu() {
+            const user = await getCurrentUser();
             const userMenu = document.getElementById('userMenu');
             const loginBtn = document.getElementById('loginBtn');
-
             if (user) {
                 userMenu.classList.remove('hidden');
                 loginBtn.classList.add('hidden');
-                document.getElementById('userEmail').textContent = user.name || user.email;
-                document.getElementById('profileName').textContent = user.name || 'Usuario';
-                document.getElementById('profileEmail').textContent = user.email || '';
-                document.getElementById('displayName').textContent = user.name || 'No especificado';
-                document.getElementById('displayEmail').textContent = user.email || 'No especificado';
+                document.getElementById('userEmail').textContent = user.email;
+
+                const { data: profile, error: profileError } = await supabase
+                    .from('profiles')
+                    .select('full_name')
+                    .eq('id', user.id)
+                    .single();
+
+                if (!profileError && profile) {
+                    document.getElementById('profileName').textContent = profile.full_name || 'Usuario';
+                    document.getElementById('displayName').textContent = profile.full_name || user.email.split('@')[0];
+                } else {
+                    document.getElementById('profileName').textContent = 'Usuario';
+                    document.getElementById('displayName').textContent = user.email.split('@')[0];
+                }
+                document.getElementById('profileEmail').textContent = user.email;
+                document.getElementById('displayEmail').textContent = user.email;
             } else {
                 userMenu.classList.add('hidden');
                 loginBtn.classList.remove('hidden');
                 window.location.href = 'index.html';
             }
         }
+        window.updateUserMenu = updateUserMenu;
 
         // Cart Management
-        function getCartItems() {
-            return JSON.parse(localStorage.getItem('modaPeruCart') || '[]');
-        }
-
-        function updateCartBadge() {
-            const cart = getCartItems();
+        async function updateCartBadge() {
+            const user = await getCurrentUser();
+            if (!user) {
+                const badge = document.getElementById('cartBadge');
+                if (badge) badge.classList.add('hidden');
+                return;
+            }
+            
+            const { count, error } = await supabase.from('cart_items').select('*', { count: 'exact', head: true }).eq('user_id', user.id);
             const badge = document.getElementById('cartBadge');
             if (badge) {
-                if (cart.length > 0) {
-                    badge.textContent = cart.length;
+                if (!error && count > 0) {
+                    badge.textContent = count;
                     badge.classList.remove('hidden');
                 } else {
                     badge.classList.add('hidden');
                 }
             }
         }
+        window.updateCartBadge = updateCartBadge;
 
-        function updateCartSummary() {
-            const cart = getCartItems();
+        async function updateCartSummary() {
+            const user = await getCurrentUser();
             const container = document.getElementById('cartSummary');
-            if (cart.length === 0) {
+            if (!user) {
                 container.innerHTML = '<p class="text-gray-500 dark:text-gray-400">Tu carrito está vacío</p>';
                 return;
             }
-            const total = cart.reduce((sum, item) => sum + (item.price * (item.quantity || 1)), 0);
+
+            const { data: cartItems, error } = await supabase
+                .from('cart_items')
+                .select(`
+                    id,
+                    quantity,
+                    size,
+                    products (
+                        name,
+                        price
+                    )
+                `)
+                .eq('user_id', user.id);
+
+            if (error || !cartItems || cartItems.length === 0) {
+                container.innerHTML = '<p class="text-gray-500 dark:text-gray-400">Tu carrito está vacío</p>';
+                return;
+            }
+
+            const total = cartItems.reduce((sum, item) => sum + (item.products.price * item.quantity), 0);
             container.innerHTML = `
                 <div class="space-y-3">
-                    ${cart.map((item, index) => `
+                    ${cartItems.map((item) => `
                         <div class="flex justify-between items-center">
                             <div>
-                                <p class="font-medium text-black dark:text-white">${item.name}</p>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">Talla: ${item.size} • Cantidad: ${item.quantity || 1}</p>
+                                <p class="font-medium text-black dark:text-white">${item.products.name}</p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Talla: ${item.size} • Cantidad: ${item.quantity}</p>
                             </div>
-                            <p class="font-semibold text-black dark:text-white">S/ ${(item.price * (item.quantity || 1)).toLocaleString()}</p>
+                            <p class="font-semibold text-black dark:text-white">S/ ${(item.products.price * item.quantity).toLocaleString()}</p>
                         </div>
                     `).join('')}
                     <div class="border-t border-gray-200 dark:border-gray-700 pt-3 flex justify-between items-center">
@@ -267,12 +308,15 @@
                 </div>
             `;
         }
+        window.updateCartSummary = updateCartSummary;
 
         function goToCart() { window.location.href = 'cart.html'; }
-        function goToLogin() {
-            const user = getCurrentUser();
+        window.goToCart = goToCart;
+        async function goToLogin() {
+            const user = await getCurrentUser();
             window.location.href = user ? 'profile.html' : 'index.html';
         }
+        window.goToLogin = goToLogin;
 
         // Modal
         const modalData = {
@@ -368,17 +412,39 @@
                 document.getElementById('infoModal').classList.remove('hidden');
             }
         }
+        window.showModal = showModal;
 
         function closeModal() {
             document.getElementById('infoModal').classList.add('hidden');
         }
+        window.closeModal = closeModal;
 
-        // Initialize
-        window.onload = function() {
+        // Toast notifications
+        function showToast(message, type = 'success') {
+            let container = document.getElementById('toast-container');
+            if (!container) {
+                container = document.createElement('div');
+                container.id = 'toast-container';
+                container.className = 'toast-container';
+                document.body.appendChild(container);
+            }
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            container.appendChild(toast);
+            requestAnimationFrame(() => toast.classList.add('show'));
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+        window.showToast = showToast;
+
+        window.onload = async function() {
             loadTheme();
-            updateUserMenu();
-            updateCartBadge();
-            updateCartSummary();
+            await updateUserMenu();
+            await updateCartBadge();
+            await updateCartSummary();
         };
     </script>
 </body>
