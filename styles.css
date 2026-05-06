@@ -13,6 +13,7 @@ body {
     from { opacity: 0; }
     to { opacity: 1; }
 }
+
 html {
     scroll-behavior: smooth;
 }
@@ -231,7 +232,7 @@ a:hover, button:hover {
     appearance: none;
     width: 100%;
     border: 1px solid #6b7280;
-    background-color: #000000;
+    background-color: #ffffff;
     border-radius: 0;
     padding: 0.5rem 0.75rem;
     font-size: 1rem;
@@ -242,44 +243,15 @@ a:hover, button:hover {
     color: #000000;
 }
 
-.form-input::placeholder, .form-textarea::placeholder, .form-select::placeholder, .form-multiselect::placeholder {
-    color: #9ca3af;
-}
-
-.form-input:focus, .form-textarea:focus, .form-select:focus, .form-multiselect:focus {
-    outline: none;
-    border-color: #ffffff !important;
-}
-
-/* En modo claro, Cambiar a fondo blanco y texto negro */
-.form-input, .form-textarea, .form-select, .form-multiselect {
-    background-color: #ffffff;
-}
-
-.dark .form-input, .dark .form-textarea, .dark .form-select, .dark .form-multiselect {
-    background-color: #000000;
-    color: #000000;
-}
-
-.form-input::placeholder, .form-textarea::placeholder, .form-select::placeholder, .form-multiselect::placeholder {
-    color: #9ca3af;
-}
-
 .form-input:focus, .form-textarea:focus, .form-select:focus, .form-multiselect:focus {
     outline: none;
     border-color: #000000 !important;
 }
 
-/* Modo oscuro - inputs oscuros */
-.dark .form-input, .dark .form-textarea, .dark .form-select, .dark .form-multiselect {
-    background-color: #000000;
-    color: #ffffff;
-    border-color: #6b7280;
+.form-input::placeholder, .form-textarea::placeholder, .form-select::placeholder, .form-multiselect::placeholder {
+    color: #9ca3af;
 }
 
-.dark .form-input:focus, .dark .form-textarea:focus, .dark .form-select:focus, .dark .form-multiselect:focus {
-    border-color: #ffffff !important;
-}
 /* ============================================ */
 
 /* Link underline animation */
@@ -330,6 +302,16 @@ body.dark, .dark body {
 .dark .category-tag { color: #aaaaaa; }
 .dark .delivery-label { color: #ffffff; }
 .dark .delivery-detail { color: #aaaaaa; }
+
+.dark .form-input, .dark .form-textarea, .dark .form-select, .dark .form-multiselect {
+    background-color: #000000;
+    color: #ffffff;
+    border-color: #6b7280;
+}
+
+.dark .form-input:focus, .dark .form-textarea:focus, .dark .form-select:focus, .dark .form-multiselect:focus {
+    border-color: #ffffff !important;
+}
 
 .dark .footer-link { color: #999999; }
 .dark .footer-link:hover { color: #ffffff; }
@@ -411,10 +393,10 @@ body.dark, .dark body {
     justify-content: center;
     cursor: pointer;
     transition: all 0.2s ease;
-    color: #000000;
+    color: #666666; /* Default color for quantity buttons */
 }
 .quantity-btn:hover { 
-    background-color: #f5f5f5; 
+    background-color: #e5e7eb; /* Lighter hover for light mode */
 }
 .dark .quantity-btn {
     border-color: #404040;

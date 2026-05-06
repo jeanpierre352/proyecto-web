@@ -5,8 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MODA PERÚ - Términos y Condiciones</title>
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🇵🇪</text></svg>">
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries" defer></script>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
     <link rel="stylesheet" href="styles.css">
     <script id="tailwind-config">
@@ -114,6 +113,7 @@
                 localStorage.setItem('modaPeruTheme', 'dark');
             }
         }
+        window.toggleDarkMode = toggleDarkMode;
 
         function loadTheme() {
             const theme = localStorage.getItem('modaPeruTheme') || 'light';
@@ -124,6 +124,7 @@
                 if (icon) icon.textContent = 'light_mode';
             }
         }
+        window.loadTheme = loadTheme;
 
         // User Management
         function getCurrentUser() {
@@ -267,8 +268,10 @@
                 document.getElementById('infoModal').classList.remove('hidden');
             }
         }
+        window.showModal = showModal;
 
         function closeModal() { document.getElementById('infoModal').classList.add('hidden'); }
+        window.closeModal = closeModal;
 
         // Toast notifications
         function showToast(message, type = 'success') {
@@ -289,20 +292,12 @@
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
         }
+        window.showToast = showToast;
 
-        function showModal(page) {
-            const data = modalData[page];
-            if (data) {
-                document.getElementById('modalTitle').textContent = data.title;
-                document.getElementById('modalContent').innerHTML = data.content;
-                document.getElementById('infoModal').classList.remove('hidden');
-            }
-        }
-
-        window.onload = function() {
+        window.onload = async function() {
             loadTheme();
-            updateUserMenu();
-            updateCartBadge();
+            await updateUserMenu();
+            await updateCartBadge();
         };
     </script>
 </body>

@@ -46,6 +46,7 @@
                 </button>
                 <button class="icon-btn relative dark:text-white" onclick="window.location.href='cart.html'">
                     <span class="material-symbols-outlined" data-icon="shopping_bag">shopping_bag</span>
+                    <span id="cartBadge" class="absolute -top-1 -right-1 bg-black dark:bg-white text-white dark:text-black text-[10px] w-4 h-4 rounded-full flex items-center justify-center hidden">0</span>
                 </button>
                 <button class="icon-btn dark:text-white" onclick="toggleDarkMode()">
                     <span id="themeIcon" class="material-symbols-outlined" data-icon="dark_mode">dark_mode</span>
@@ -114,78 +115,95 @@
         </div>
     </footer>
 
-    <script>
+    <script type="module">
+        import { supabase } from './supabase-config.js';
         // Theme Management
         function toggleDarkMode() {
             const html = document.documentElement;
             const icon = document.getElementById('themeIcon');
             if (html.classList.contains('dark')) {
                 html.classList.remove('dark');
-                icon.textContent = 'dark_mode';
+                html.classList.add('light');
+                if (icon) icon.textContent = 'dark_mode';
                 localStorage.setItem('modaPeruTheme', 'light');
             } else {
                 html.classList.add('dark');
-                icon.textContent = 'light_mode';
+                html.classList.remove('light');
+                if (icon) icon.textContent = 'light_mode';
                 localStorage.setItem('modaPeruTheme', 'dark');
             }
         }
 
         function loadTheme() {
             const theme = localStorage.getItem('modaPeruTheme') || 'light';
+            const html = document.documentElement;
+            const icon = document.getElementById('themeIcon');
             if (theme === 'dark') {
-                document.documentElement.classList.add('dark');
-                const icon = document.getElementById('themeIcon');
+                html.classList.add('dark');
                 if (icon) icon.textContent = 'light_mode';
+            } else {
+                html.classList.remove('dark');
+                if (icon) icon.textContent = 'dark_mode';
             }
         }
+        window.toggleDarkMode = toggleDarkMode;
+        window.loadTheme = loadTheme;
 
         // User Management
-        function getCurrentUser() {
-            return JSON.parse(localStorage.getItem('modaPeruCurrentUser') || 'null');
+        async function getCurrentUser() {
+            const { data: { user } } = await supabase.auth.getUser();
+            return user;
         }
+        window.getCurrentUser = getCurrentUser;
 
-        function setCurrentUser(user) {
-            localStorage.setItem('modaPeruCurrentUser', JSON.stringify(user));
-        }
-
-        function updateUserMenu() {
-            const user = getCurrentUser();
+        async function updateUserMenu() {
+            const user = await getCurrentUser();
             const userMenu = document.getElementById('userMenu');
             const loginBtn = document.getElementById('loginBtn');
             const userEmail = document.getElementById('userEmail');
             if (user) {
                 userMenu.classList.remove('hidden');
                 loginBtn.classList.add('hidden');
-                if (userEmail) userEmail.textContent = user.name || user.email;
+                if (userEmail) userEmail.textContent = user.email;
             } else {
                 userMenu.classList.add('hidden');
                 loginBtn.classList.remove('hidden');
             }
         }
+        window.updateUserMenu = updateUserMenu;
 
-        function goToLogin() {
-            const user = getCurrentUser();
+        async function goToLogin() {
+            const user = await getCurrentUser();
             window.location.href = user ? 'profile.html' : 'index.html';
         }
+        window.goToLogin = goToLogin;
 
-        function logout() {
-            localStorage.removeItem('modaPeruCurrentUser');
-            updateUserMenu();
+        async function logout() {
+            await supabase.auth.signOut();
             window.location.href = 'index.html';
         }
+        window.logout = logout;
 
-        function updateCartBadge() {
-            const cart = JSON.parse(localStorage.getItem('modaPeruCart') || '[]');
+        async function updateCartBadge() {
+            const user = await getCurrentUser();
+            if (!user) {
+                const badge = document.getElementById('cartBadge');
+                if (badge) badge.classList.add('hidden');
+                return;
+            }
+            
+            const { count, error } = await supabase.from('cart_items').select('*', { count: 'exact', head: true }).eq('user_id', user.id);
             const badge = document.getElementById('cartBadge');
             if (badge) {
-                if (cart.length > 0) {
-                    badge.textContent = cart.length;
+                if (!error && count > 0) {
+                    badge.textContent = count;
                     badge.classList.remove('hidden');
                 } else {
                     badge.classList.add('hidden');
                 }
             }
         }
+        window.updateCartBadge = updateCartBadge;
 
         function showToast(message, type = 'success') {
             let container = document.getElementById('toast-container');
@@ -205,6 +223,7 @@
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
         }
+        window.showToast = showToast;
 
         // Modal Data
         const modalData = {
@@ -291,6 +310,7 @@
                 <p class="mt-4 text-gray-600 dark:text-gray-400">¿Necesitas ayuda? Contáctanos por WhatsApp.</p>`
             }
         };
+        window.modalData = modalData; // Expose to window for onclicks
 
         function showModal(page) {
             const data = modalData[page];
@@ -303,49 +323,54 @@
                 if (modal) modal.classList.remove('hidden');
             }
         }
+        window.showModal = showModal;
 
         function closeModal() {
             const modal = document.getElementById('infoModal');
             if (modal) modal.classList.add('hidden');
         }
+        window.closeModal = closeModal;
 
         // Auth Handlers
-        function handleRegister(e) {
+        async function handleRegister(e) {
             e.preventDefault();
             const name = document.getElementById('registerName').value;
             const email = document.getElementById('registerEmail').value;
             const password = document.getElementById('registerPassword').value;
             const confirm = document.getElementById('registerConfirm').value;
-
             if (password !== confirm) {
                 showToast('Las contraseñas no coinciden', 'error');
                 return;
             }
 
-            const users = JSON.parse(localStorage.getItem('modaPeruUsers') || '[]');
-            if (users.find(u => u.email === email)) {
-                showToast('Ya existe una cuenta con este correo', 'error');
+            const { data, error } = await supabase.auth.signUp({ 
+                email, 
+                password,
+                options: { data: { full_name: name } }
+            });
+
+            if (error) {
+                showToast(error.message, 'error');
                 return;
             }
 
-            const newUser = { name, email, password };
-            users.push(newUser);
-            localStorage.setItem('modaPeruUsers', JSON.stringify(users));
-            setCurrentUser({ name, email });
-            showToast('Cuenta creada exitosamente', 'success');
+            // Insert profile data
+            await supabase.from('profiles').insert([{ id: data.user.id, full_name: name }]);
+            showToast('Cuenta creada exitosamente. Revisa tu correo para verificarla.', 'success');
             
             // Redirect to home after successful registration
             setTimeout(() => {
                 window.location.href = 'home.html';
             }, 1500);
         }
+        window.handleRegister = handleRegister;
 
         // Initialize
-        window.onload = function() {
+        window.onload = async function() {
             loadTheme();
-            updateUserMenu();
-            updateCartBadge();
-            const user = getCurrentUser();
+            await updateUserMenu();
+            await updateCartBadge();
+            const user = await getCurrentUser();
             if (user) {
                 window.location.href = 'home.html';
             }

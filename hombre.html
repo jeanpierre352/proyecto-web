@@ -194,7 +194,8 @@
     </footer>
 
     <!-- JavaScript -->
-    <script>
+    <script type="module">
+        import { supabase } from './supabase-config.js';
         // Theme Management
         function toggleDarkMode() {
             const html = document.documentElement;
@@ -219,80 +220,90 @@
                 if (icon) icon.textContent = 'light_mode';
             }
         }
+        window.loadTheme = loadTheme;
 
         // User Management
-        function getCurrentUser() {
-            return JSON.parse(localStorage.getItem('modaPeruCurrentUser') || 'null');
+        async function getCurrentUser() {
+            const { data: { user } } = await supabase.auth.getUser();
+            return user;
         }
+        window.getCurrentUser = getCurrentUser;
 
-        function logout() {
-            localStorage.removeItem('modaPeruCurrentUser');
-            updateUserMenu();
+        async function logout() {
+            await supabase.auth.signOut();
             window.location.href = 'index.html';
         }
+        window.logout = logout;
 
-        function updateUserMenu() {
-            const user = getCurrentUser();
+        async function updateUserMenu() {
+            const user = await getCurrentUser();
             const userMenu = document.getElementById('userMenu');
             const loginBtn = document.getElementById('loginBtn');
             const userEmail = document.getElementById('userEmail');
-            
             if (user) {
                 userMenu.classList.remove('hidden');
                 loginBtn.classList.add('hidden');
-                if (userEmail) userEmail.textContent = user.name || user.email;
+                if (userEmail) userEmail.textContent = user.email;
             } else {
                 userMenu.classList.add('hidden');
                 loginBtn.classList.remove('hidden');
             }
         }
+        window.updateUserMenu = updateUserMenu;
 
         // Cart Management
-        function getCartItems() {
-            return JSON.parse(localStorage.getItem('modaPeruCart') || '[]');
-        }
+        async function updateCartBadge() {
+            const user = await getCurrentUser();
+            if (!user) return;
 
-        function updateCartBadge() {
-            const cart = getCartItems();
+            const { count, error } = await supabase
+                .from('cart_items')
+                .select('*', { count: 'exact', head: true })
+                .eq('user_id', user.id);
+
             const badge = document.getElementById('cartBadge');
             if (badge) {
-                if (cart.length > 0) {
-                    badge.textContent = cart.length;
+                if (!error && count > 0) {
+                    badge.textContent = count;
                     badge.classList.remove('hidden');
                 } else {
                     badge.classList.add('hidden');
                 }
             }
         }
+        window.updateCartBadge = updateCartBadge;
 
-        function addToCart() {
-            const user = getCurrentUser();
+        async function addToCart() {
+            const user = await getCurrentUser();
             if (!user) {
                 showToast('Por favor inicia sesión para añadir productos al carrito', 'error');
                 setTimeout(() => window.location.href = 'index.html', 1500);
                 return;
             }
 
-            let cartItems = getCartItems();
             const selectedSize = document.querySelector('.size-button.selected');
             const size = selectedSize ? selectedSize.textContent : 'S';
 
-            cartItems.push({
-                id: 1,
-                name: 'Abrigo de Alpaca Minimalista',
-                price: 1450,
-                image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD1debAKjt8bY8QJSHbssGk9uZaU-dWVMOiJ_WiTBndJDmkV-SukSCkhfSfBkxkdxaRYtEbbv01pNO28G4KKTe8dvtYm7dgyzS_hYap3duxTHHjGrf5i6G-fg0mw6P6RQjdVqO-rleLZWlv9KzCWMpYkJjWEqHSVXOmwQXbafVLFuXheCfdbtxFabySM-5E3rLvCyTkNEEyknxFAFQODRxkN6pVaxADAGlaAGsV0-MH9AudF9XJTu8GPSGhV8Sa0NduoXxXSA4p5w',
-                size: size,
-                quantity: 1
-            });
+            const { error } = await supabase
+                .from('cart_items')
+                .insert([{
+                    user_id: user.id,
+                    product_id: 1, // Abrigo de Alpaca Minimalista (ID de la tabla products)
+                    size: size,
+                    quantity: 1
+                }]);
 
-            localStorage.setItem('modaPeruCart', JSON.stringify(cartItems));
-            showToast('Producto añadido al carrito');
-            updateCartBadge();
+            if (error) {
+                showToast('Error al añadir al carrito: ' + error.message, 'error');
+            } else {
+                showToast('Producto añadido al carrito');
+                await updateCartBadge();
+            }
         }
+        window.addToCart = addToCart;
 
-        function addToWishlist() {
-            const user = getCurrentUser();
+        async function addToWishlist() {
+            const user = await getCurrentUser();
             if (!user) {
                 showToast('Por favor inicia sesión para añadir a tu lista de deseos', 'error');
                 setTimeout(() => window.location.href = 'index.html', 1500);
@@ -300,13 +311,16 @@
             }
             showToast('Producto añadido a tu lista de deseos');
         }
+        window.addToWishlist = addToWishlist;
 
         // Navigation
         function goToCart() { window.location.href = 'cart.html'; }
-        function goToLogin() {
-            const user = getCurrentUser();
+        window.goToCart = goToCart;
+        async function goToLogin() {
+            const user = await getCurrentUser();
             window.location.href = user ? 'profile.html' : 'index.html';
         }
+        window.goToLogin = goToLogin;
 
         // Modal
         const modalData = {
@@ -402,20 +416,18 @@
                 document.getElementById('infoModal').classList.remove('hidden');
             }
         }
+        window.showModal = showModal;
 
         function closeModal() {
             document.getElementById('infoModal').classList.add('hidden');
         }
+        window.closeModal = closeModal;
 
         function selectSize(button) {
-            document.querySelectorAll('.size-button').forEach(btn => {
-                btn.classList.remove('selected', 'bg-black', 'text-white', 'border-black');
-                btn.classList.add('border-neutral-200', 'dark:border-neutral-700');
-            });
+            document.querySelectorAll('.size-button').forEach(btn => btn.classList.remove('selected'));
             button.classList.add('selected');
-            button.classList.remove('border-neutral-200', 'dark:border-neutral-700');
-            button.classList.add('bg-black', 'text-white', 'border-black');
         }
+        window.selectSize = selectSize;
 
         function showToast(message, type = 'success') {
             let container = document.getElementById('toast-container');
@@ -435,12 +447,13 @@
                 setTimeout(() => toast.remove(), 300);
             }, 3000);
         }
+        window.showToast = showToast;
 
         // Initialize
-        window.onload = function() {
+        window.onload = async function() {
             loadTheme();
-            updateUserMenu();
-            updateCartBadge();
+            await updateUserMenu();
+            await updateCartBadge();
         };
     </script>
 </body>
